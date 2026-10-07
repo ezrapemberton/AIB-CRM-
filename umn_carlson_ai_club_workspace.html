@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMN Carlson AI in Business Club - Ezra's Recruitment Command Center</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Inter & Outfit Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            umn: {
+              maroon: '#7A0019',
+              maroonDark: '#540011',
+              gold: '#FFCC00',
+              goldDark: '#D4A000',
+              goldLight: '#FFE880'
+            },
+            darkBg: '#0b0f19',
+            cardBg: '#131b2e',
+            borderDark: '#222f47'
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, .font-heading {
+      font-family: 'Outfit', sans-serif;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #222f47;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #7A0019;
+    }
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFCC00 0%, #FFA500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .maroon-glow {
+      box-shadow: 0 0 25px rgba(122, 0, 25, 0.35);
+    }
+    .gold-glow {
+      box-shadow: 0 0 20px rgba(255, 204, 0, 0.25);
+    }
+    .modal-backdrop {
+      background-color: rgba(5, 8, 15, 0.85);
+      backdrop-filter: blur(6px);
+    }
+    /* Pulse ring for pitch timer */
+    @keyframes timerPulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.6); }
+      70% { box-shadow: 0 0 0 15px rgba(255, 204, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
+    }
+    .timer-active {
+      animation: timerPulse 2s infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-umn-gold selection:text-umn-maroonDark">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-40 bg-cardBg/90 backdrop-blur-md border-b border-borderDark px-4 lg:px-8 py-3">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <!-- Brand & User Profile -->
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-umn-maroon to-red-900 border border-umn-gold/40 flex items-center justify-center shadow-lg maroon-glow">
+          <i class="fa-solid fa-brain text-umn-gold text-xl"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-lg font-bold tracking-tight text-white font-heading">UMN AI in Business Club</h1>
+            <span class="bg-umn-maroon/80 text-umn-gold text-xs font-semibold px-2 py-0.5 rounded-full border border-umn-gold/30">Carlson School</span>
+          </div>
+          <p class="text-xs text-slate-400">Founder & Leader Workspace: <span class="text-umn-gold font-medium">Ezra</span> • Fall Outreach Blitz</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1 bg-darkBg/80 p-1 rounded-xl border border-borderDark overflow-x-auto">
+        <button id="tab-dashboard" onclick="switchTab('dashboard')" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all bg-umn-maroon text-white shadow-md">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Database & Pipeline</span>
+        </button>
+        <button id="tab-route" onclick="switchTab('route')" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-2 transition-all hover:bg-slate-800">
+          <i class="fa-solid fa-route"></i>
+          <span>West Bank Map & Itinerary</span>
+        </button>
+        <button id="tab-presentation" onclick="switchTab('presentation')" class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-2 transition-all hover:bg-slate-800">
+          <i class="fa-solid fa-tv"></i>
+          <span>Pitch Mode & Deck</span>
+        </button>
+      </nav>
+
+      <!-- Global Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="unconfirmAllClasses()" class="px-3 py-1.5 rounded-lg border border-red-500/40 bg-red-950/40 text-red-300 hover:bg-red-900/60 text-xs font-medium flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-rotate-left"></i>
+          <span>Unconfirm All (Reset)</span>
+        </button>
+        <button onclick="openAddClassModal()" class="px-3 py-1.5 rounded-lg bg-umn-gold text-umn-maroonDark font-bold hover:bg-umn-goldLight text-xs flex items-center gap-1.5 transition-all shadow-md">
+          <i class="fa-solid fa-plus"></i>
+          <span>Add Course</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Main View Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-8">
+
+    <!-- VIEW 1: DASHBOARD & MASTER CLASS DATABASE -->
+    <section id="view-dashboard" class="space-y-6">
+
+      <!-- Analytics Dashboard Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Target Student Reach -->
+        <div class="bg-cardBg border border-borderDark p-5 rounded-2xl relative overflow-hidden group hover:border-umn-gold/40 transition-all">
+          <div class="absolute -right-4 -bottom-4 opacity-10 text-umn-gold group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-users text-8xl"></i>
+          </div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Targeted Reach</p>
+          <h3 id="stat-total-students" class="text-3xl font-extrabold text-white mt-1 font-heading">4,850+</h3>
+          <p class="text-xs text-umn-gold mt-2 flex items-center gap-1">
+            <i class="fa-solid fa-[#FFCC00] fa-bullseye"></i>
+            <span>Freshmen & Sophomores Focus</span>
+          </p>
+        </div>
+
+        <!-- Total Course Sections -->
+        <div class="bg-cardBg border border-borderDark p-5 rounded-2xl relative overflow-hidden group hover:border-umn-gold/40 transition-all">
+          <div class="absolute -right-4 -bottom-4 opacity-10 text-umn-gold group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-chalkboard-user text-8xl"></i>
+          </div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Loaded Sections</p>
+          <h3 id="stat-total-sections" class="text-3xl font-extrabold text-white mt-1 font-heading">38 Sections</h3>
+          <p class="text-xs text-emerald-400 mt-2 flex items-center gap-1">
+            <i class="fa-solid fa-building-columns"></i>
+            <span>CSOM, CLA, CSE & Humphrey</span>
+          </p>
+        </div>
+
+        <!-- Contact Pipeline Status -->
+        <div class="bg-cardBg border border-borderDark p-5 rounded-2xl relative overflow-hidden group hover:border-umn-gold/40 transition-all">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Outreach Pipeline</p>
+          <div class="flex items-baseline gap-2 mt-1">
+            <h3 id="stat-contacted-count" class="text-3xl font-extrabold text-white font-heading">0 / 38</h3>
+            <span class="text-xs text-slate-400">Contacted</span>
+          </div>
+          <!-- Progress bar -->
+          <div class="w-full bg-slate-800 h-2 rounded-full mt-3 overflow-hidden">
+            <div id="stat-pipeline-bar" class="bg-gradient-to-r from-umn-gold to-emerald-400 h-full w-0 transition-all duration-500"></div>
+          </div>
+        </div>
+
+        <!-- Freshman Gap Target -->
+        <div class="bg-cardBg border border-borderDark p-5 rounded-2xl relative overflow-hidden group hover:border-umn-gold/40 transition-all">
+          <div class="absolute -right-4 -bottom-4 opacity-10 text-umn-gold group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-graduation-cap text-8xl"></i>
+          </div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Freshman / Soph Density</p>
+          <h3 id="stat-freshman-pct" class="text-3xl font-extrabold text-umn-gold mt-1 font-heading">84%</h3>
+          <p class="text-xs text-slate-400 mt-2">Targeting key gap in club retention</p>
+        </div>
+      </div>
+
+      <!-- Filters and Search Toolbar -->
+      <div class="bg-cardBg border border-borderDark p-4 rounded-2xl flex flex-col lg:flex-row gap-4 justify-between items-center">
+        <!-- Search input -->
+        <div class="relative w-full lg:w-80">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+          <input type="text" id="filter-search" oninput="applyFilters()" placeholder="Search class, professor, or major..." 
+                 class="w-full bg-darkBg border border-borderDark rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-umn-gold transition-colors">
+        </div>
+
+        <!-- Filter Dropdowns -->
+        <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+          <!-- Status filter -->
+          <select id="filter-status" onchange="applyFilters()" class="bg-darkBg border border-borderDark rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-umn-gold">
+            <option value="ALL">All Statuses</option>
+            <option value="To Contact" selected>To Contact (Unconfirmed)</option>
+            <option value="Emailed">Emailed</option>
+            <option value="Approved">Approved / Scheduled</option>
+            <option value="Declined">Declined</option>
+          </select>
+
+          <!-- Year Level Filter -->
+          <select id="filter-level" onchange="applyFilters()" class="bg-darkBg border border-borderDark rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-umn-gold">
+            <option value="ALL">All Levels</option>
+            <option value="Freshman">Freshman Focus</option>
+            <option value="Freshman / Sophomore">Freshman / Sophomore</option>
+            <option value="Sophomore">Sophomore Focus</option>
+          </select>
+
+          <!-- College Filter -->
+          <select id="filter-college" onchange="applyFilters()" class="bg-darkBg border border-borderDark rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-umn-gold">
+            <option value="ALL">All Colleges</option>
+            <option value="Carlson School of Management">Carlson School (CSOM)</option>
+            <option value="College of Liberal Arts">College of Liberal Arts (CLA)</option>
+            <option value="College of Science & Engineering">CSE & Data Science</option>
+            <option value="Humphrey School">Humphrey School</option>
+          </select>
+
+          <!-- Building Filter -->
+          <select id="filter-building" onchange="applyFilters()" class="bg-darkBg border border-borderDark rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-umn-gold">
+            <option value="ALL">All West Bank Buildings</option>
+            <option value="CSOM">CSOM (Carlson Building)</option>
+            <option value="Hanson Hall">Hanson Hall</option>
+            <option value="Willey Hall">Willey Hall</option>
+            <option value="Blegen Hall">Blegen Hall</option>
+            <option value="Humphrey Center">Humphrey Center</option>
+          </select>
+
+          <!-- Clear Filters -->
+          <button onclick="resetFilters()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors" title="Reset Filters">
+            <i class="fa-solid fa-filter-circle-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Master Database Table Section -->
+      <div class="bg-cardBg border border-borderDark rounded-2xl overflow-hidden shadow-xl">
+        <div class="px-6 py-4 border-b border-borderDark flex justify-between items-center">
+          <div>
+            <h2 class="text-base font-bold text-white font-heading">Target Classes Directory for Ezra</h2>
+            <p class="text-xs text-slate-400">Click any class to view & copy customized professor outreach emails and 60-second classroom pitch scripts.</p>
+          </div>
+          <div id="table-count-badge" class="bg-darkBg text-umn-gold border border-umn-gold/30 px-3 py-1 rounded-full text-xs font-semibold">
+            Showing 38 / 38 sections
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-darkBg/60 text-slate-400 border-b border-borderDark uppercase tracking-wider font-semibold">
+                <th class="p-4">Course & Sec</th>
+                <th class="p-4">Target Major Focus</th>
+                <th class="p-4">Level & College</th>
+                <th class="p-4">Schedule & Location</th>
+                <th class="p-4">Est. Size</th>
+                <th class="p-4">Professor & Contact</th>
+                <th class="p-4">Status</th>
+                <th class="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="class-table-body" class="divide-y divide-borderDark/60 font-normal">
+              <!-- JS Populated Row Content -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- VIEW 2: WEST BANK MAP & PITCH ITINERARY -->
+    <section id="view-route" class="space-y-6 hidden">
+      <!-- Section Intro Header -->
+      <div class="bg-cardBg border border-borderDark p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-white font-heading">West Bank Pitch Route & Daily Itinerary</h2>
+          <p class="text-xs text-slate-400 mt-1">Select a day of the week to map Ezra's walking route between Willey Hall, CSOM, Hanson Hall, Blegen Hall, and Humphrey Center with buffer calculations.</p>
+        </div>
+
+        <!-- Day Switcher Pills -->
+        <div class="flex items-center gap-1.5 bg-darkBg p-1.5 rounded-xl border border-borderDark">
+          <button onclick="selectDay('Mon')" class="day-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-umn-maroon text-white" data-day="Mon">Mon</button>
+          <button onclick="selectDay('Tue')" class="day-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white" data-day="Tue">Tue</button>
+          <button onclick="selectDay('Wed')" class="day-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white" data-day="Wed">Wed</button>
+          <button onclick="selectDay('Thu')" class="day-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white" data-day="Thu">Thu</button>
+          <button onclick="selectDay('Fri')" class="day-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white" data-day="Fri">Fri</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Interactive West Bank SVG Map -->
+        <div class="lg:col-span-7 bg-cardBg border border-borderDark p-5 rounded-2xl flex flex-col justify-between">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-sm font-bold text-white font-heading flex items-center gap-2">
+              <i class="fa-solid fa-map-location-dot text-umn-gold"></i>
+              <span>UMN West Bank Campus Map</span>
+            </h3>
+            <span id="map-active-day-tag" class="text-xs bg-umn-maroon/50 text-umn-gold border border-umn-gold/30 px-2.5 py-0.5 rounded-full font-medium">Monday Route</span>
+          </div>
+
+          <!-- SVG Visual Map Area -->
+          <div class="relative bg-darkBg rounded-xl p-4 border border-borderDark overflow-hidden min-h-[380px] flex items-center justify-center">
+            <svg id="west-bank-svg" viewBox="0 0 800 500" class="w-full h-full max-h-[420px]">
+              <!-- Background / River representation -->
+              <rect x="0" y="0" width="800" height="500" fill="#0c121e" rx="12"/>
+              <!-- Mississippi River outline right side -->
+              <path d="M 700 0 Q 680 250 760 500 L 800 500 L 800 0 Z" fill="#13243a" opacity="0.6"/>
+              <text x="730" y="250" fill="#2c4a6f" font-size="12" font-weight="bold" transform="rotate(90 730 250)">MISSISSIPPI RIVER</text>
+
+              <!-- Walking Paths connecting buildings -->
+              <path d="M 180 160 L 360 160 L 520 230 L 400 370 L 180 340 Z" stroke="#222f47" stroke-width="3" stroke-dasharray="6,6" fill="none"/>
+              <path d="M 360 160 L 400 370" stroke="#222f47" stroke-width="3" stroke-dasharray="6,6" fill="none"/>
+
+              <!-- Building 1: CSOM (Carlson) -->
+              <g id="map-building-CSOM" class="cursor-pointer transition-transform hover:scale-105" onclick="filterByBuildingMap('CSOM')">
+                <rect x="300" y="110" width="130" height="90" rx="10" fill="#7A0019" stroke="#FFCC00" stroke-width="2"/>
+                <text x="365" y="145" fill="#FFFFFF" font-size="14" font-weight="bold" text-anchor="middle">CSOM</text>
+                <text x="365" y="165" fill="#FFCC00" font-size="11" text-anchor="middle">Carlson School</text>
+                <circle id="badge-CSOM" cx="420" cy="115" r="14" fill="#FFCC00"/>
+                <text id="count-CSOM" x="420" y="119" fill="#540011" font-size="11" font-weight="bold" text-anchor="middle">0</text>
+              </g>
+
+              <!-- Building 2: Hanson Hall -->
+              <g id="map-building-Hanson" class="cursor-pointer transition-transform hover:scale-105" onclick="filterByBuildingMap('Hanson Hall')">
+                <rect x="470" y="180" width="130" height="85" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+                <text x="535" y="215" fill="#FFFFFF" font-size="14" font-weight="bold" text-anchor="middle">Hanson Hall</text>
+                <text x="535" y="235" fill="#94a3b8" font-size="11" text-anchor="middle">CSOM & Econ</text>
+                <circle id="badge-Hanson Hall" cx="590" cy="185" r="14" fill="#3b82f6"/>
+                <text id="count-Hanson Hall" x="590" y="189" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">0</text>
+              </g>
+
+              <!-- Building 3: Willey Hall -->
+              <g id="map-building-Willey" class="cursor-pointer transition-transform hover:scale-105" onclick="filterByBuildingMap('Willey Hall')">
+                <rect x="110" y="110" width="130" height="90" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                <text x="175" y="145" fill="#FFFFFF" font-size="14" font-weight="bold" text-anchor="middle">Willey Hall</text>
+                <text x="175" y="165" fill="#94a3b8" font-size="11" text-anchor="middle">Lecture Auditoriums</text>
+                <circle id="badge-Willey Hall" cx="230" cy="115" r="14" fill="#10b981"/>
+                <text id="count-Willey Hall" x="230" y="119" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">0</text>
+              </g>
+
+              <!-- Building 4: Blegen Hall -->
+              <g id="map-building-Blegen" class="cursor-pointer transition-transform hover:scale-105" onclick="filterByBuildingMap('Blegen Hall')">
+                <rect x="110" y="300" width="130" height="85" rx="10" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+                <text x="175" y="335" fill="#FFFFFF" font-size="14" font-weight="bold" text-anchor="middle">Blegen Hall</text>
+                <text x="175" y="355" fill="#94a3b8" font-size="11" text-anchor="middle">Social Sci & Math</text>
+                <circle id="badge-Blegen Hall" cx="230" cy="305" r="14" fill="#a855f7"/>
+                <text id="count-Blegen Hall" x="230" y="309" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">0</text>
+              </g>
+
+              <!-- Building 5: Humphrey Center -->
+              <g id="map-building-Humphrey" class="cursor-pointer transition-transform hover:scale-105" onclick="filterByBuildingMap('Humphrey Center')">
+                <rect x="330" y="330" width="140" height="85" rx="10" fill="#1e293b" stroke="#f97316" stroke-width="2"/>
+                <text x="400" y="365" fill="#FFFFFF" font-size="14" font-weight="bold" text-anchor="middle">Humphrey Ctr</text>
+                <text x="400" y="385" fill="#94a3b8" font-size="11" text-anchor="middle">Public Affairs</text>
+                <circle id="badge-Humphrey Center" cx="460" cy="335" r="14" fill="#f97316"/>
+                <text id="count-Humphrey Center" x="460" y="339" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">0</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Building distance legend -->
+          <div class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs text-slate-400">
+            <div class="bg-darkBg/60 p-2 rounded-lg border border-borderDark">Hanson ↔ CSOM: <span class="text-white font-medium">1.5 min</span></div>
+            <div class="bg-darkBg/60 p-2 rounded-lg border border-borderDark">Willey ↔ CSOM: <span class="text-white font-medium">3.5 min</span></div>
+            <div class="bg-darkBg/60 p-2 rounded-lg border border-borderDark">Blegen ↔ CSOM: <span class="text-white font-medium">4.0 min</span></div>
+            <div class="bg-darkBg/60 p-2 rounded-lg border border-borderDark">Humphrey ↔ CSOM: <span class="text-white font-medium">4.5 min</span></div>
+          </div>
+        </div>
+
+        <!-- Daily Itinerary Timeline -->
+        <div class="lg:col-span-5 bg-cardBg border border-borderDark p-5 rounded-2xl flex flex-col">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-sm font-bold text-white font-heading flex items-center gap-2">
+              <i class="fa-regular fa-clock text-umn-gold"></i>
+              <span>Chronological Pitch Schedule</span>
+            </h3>
+            <span id="itinerary-count" class="text-xs text-slate-400">0 Classes Target</span>
+          </div>
+
+          <!-- Timeline Container -->
+          <div id="itinerary-list" class="space-y-3 flex-1 overflow-y-auto max-h-[500px] pr-1">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: PRESENTATION MODE & SLIDE VIEWER -->
+    <section id="view-presentation" class="space-y-6 hidden">
+      <!-- Pitch Deck Toolbar & Timer Header -->
+      <div class="bg-cardBg border border-borderDark p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-xl font-bold text-white font-heading">Ezra's 60-Second Pitch Command</h2>
+            <span class="bg-umn-gold/20 text-umn-gold text-xs font-bold px-2.5 py-0.5 rounded-full border border-umn-gold/40">Live Pitch Mode</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Embedded presentation deck paired with a live 60-second classroom pitch countdown timer.</p>
+        </div>
+
+        <!-- Integrated Pitch Timer Bar -->
+        <div id="pitch-timer-card" class="bg-darkBg border border-borderDark px-6 py-3 rounded-2xl flex items-center gap-5">
+          <div class="text-center">
+            <div id="timer-display" class="text-4xl font-extrabold text-umn-gold font-mono tracking-tight">01:00</div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Pitch Countdown</div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="btn-timer-start" onclick="togglePitchTimer()" class="w-10 h-10 rounded-xl bg-umn-gold text-umn-maroonDark font-bold hover:bg-umn-goldLight flex items-center justify-center transition-all shadow-md">
+              <i class="fa-solid fa-play text-base"></i>
+            </button>
+            <button onclick="resetPitchTimer()" class="w-10 h-10 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center justify-center transition-all">
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+            <button onclick="adjustPitchTimer(10)" class="px-2.5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-xs font-bold">
+              +10s
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Presentation Embed Container -->
+      <div class="bg-cardBg border border-borderDark rounded-2xl p-4 overflow-hidden flex flex-col gap-4">
+        <div class="flex justify-between items-center px-2">
+          <div class="flex items-center gap-2 text-xs text-slate-300">
+            <i class="fa-solid fa-file-powerpoint text-umn-gold"></i>
+            <span>Claude Presentation Artifact: <span class="text-slate-400 font-mono">6d8oTQBuKgPLPwvuQ91wCy</span></span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <a href="https://claude.ai/artifact/6d8oTQBuKgPLPwvuQ91wCy" target="_blank" rel="noopener noreferrer" 
+               class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Open Direct Link</span>
+            </a>
+            <button onclick="toggleFullscreenEmbed()" class="px-3 py-1.5 rounded-lg bg-umn-maroon hover:bg-umn-maroonDark text-xs text-white flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-expand"></i>
+              <span>Fullscreen</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Embedded iFrame Viewer -->
+        <div id="presentation-frame-container" class="relative w-full h-[600px] bg-darkBg rounded-xl overflow-hidden border border-borderDark flex items-center justify-center">
+          <iframe id="presentation-iframe" 
+                  src="https://claude.ai/artifact/6d8oTQBuKgPLPwvuQ91wCy" 
+                  class="w-full h-full border-0" 
+                  allow="fullscreen"
+                  title="UMN AI in Business Presentation">
+          </iframe>
+          
+          <!-- Fallback overlay banner if browser restricts external iframe embedding -->
+          <div id="iframe-fallback" class="absolute inset-0 bg-darkBg/95 p-8 flex flex-col items-center justify-center text-center gap-4 hidden">
+            <div class="w-16 h-16 rounded-2xl bg-umn-maroon/40 border border-umn-gold/40 flex items-center justify-center text-umn-gold text-2xl">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">Browser Security Framing Notice</h3>
+            <p class="text-xs text-slate-400 max-w-md">Claude Artifact links may restrict embedding directly inside external frames in certain browsers. Click below to launch the presentation directly in a new window or view pitch notes.</p>
+            <a href="https://claude.ai/artifact/6d8oTQBuKgPLPwvuQ91wCy" target="_blank" rel="noopener noreferrer" class="px-6 py-3 rounded-xl bg-umn-gold text-umn-maroonDark font-extrabold hover:bg-umn-goldLight transition-all flex items-center gap-2 shadow-lg">
+              <i class="fa-solid fa-external-link"></i>
+              <span>Open Claude Presentation Deck</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Speech Cue Cards for Ezra -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-cardBg border border-borderDark p-5 rounded-2xl">
+          <div class="text-xs font-bold text-umn-gold uppercase tracking-wider mb-2">00:00 - 00:15 | The Hook</div>
+          <h4 class="text-sm font-bold text-white">Introduction & Relevance</h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            "Hey everyone! I'm Ezra, founder of the AI in Business Club here at Carlson. Whatever major you're pursuing—Finance, Marketing, Econ, or Computer Science—AI is actively reshaping your industry right now."
+          </p>
+        </div>
+
+        <div class="bg-cardBg border border-borderDark p-5 rounded-2xl">
+          <div class="text-xs font-bold text-umn-gold uppercase tracking-wider mb-2">00:15 - 00:40 | Value Proposition</div>
+          <h4 class="text-sm font-bold text-white">Hands-On Workshops & Network</h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            "We don't just talk about high-level theory. We build real AI agents, teach prompt engineering, host corporate case competitions, and connect you with recruiters looking for tech-forward students."
+          </p>
+        </div>
+
+        <div class="bg-cardBg border border-borderDark p-5 rounded-2xl">
+          <div class="text-xs font-bold text-umn-gold uppercase tracking-wider mb-2">00:40 - 01:00 | Call To Action</div>
+          <h4 class="text-sm font-bold text-white">First Meeting & Joining</h4>
+          <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            "No prior coding experience is required! Scan the QR code on the board or visit our kick-off meeting this Thursday at 6 PM in CSOM. Let's build your AI advantage together!"
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: EMAIL & PITCH SCRIPT GENERATOR FOR EZRA -->
+  <div id="email-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-cardBg border border-borderDark rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-borderDark flex justify-between items-center bg-darkBg/60">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-umn-maroon/60 border border-umn-gold/40 flex items-center justify-center text-umn-gold">
+            <i class="fa-solid fa-paper-plane"></i>
+          </div>
+          <div>
+            <h3 id="modal-class-title" class="text-base font-bold text-white font-heading">MGMT 1001 Pitch & Email Draft</h3>
+            <p id="modal-class-subtitle" class="text-xs text-slate-400">Target Major: Pre-Business Freshmen • Prof. Mary Zellmer-Bruhn</p>
+          </div>
+        </div>
+        <button onclick="closeEmailModal()" class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (Tabs for Email vs Speech Script) -->
+      <div class="p-6 flex-1 overflow-y-auto space-y-5">
+        <!-- Sub-tabs -->
+        <div class="flex border-b border-borderDark gap-4">
+          <button id="modal-tab-email-btn" onclick="switchModalTab('email')" class="pb-2 text-xs font-bold border-b-2 border-umn-gold text-umn-gold">
+            <i class="fa-solid fa-envelope mr-1.5"></i> Professor Email Draft
+          </button>
+          <button id="modal-tab-script-btn" onclick="switchModalTab('script')" class="pb-2 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-white">
+            <i class="fa-solid fa-microphone mr-1.5"></i> 60-Sec Classroom Pitch Script
+          </button>
+        </div>
+
+        <!-- TAB CONTENT 1: EMAIL DRAFT -->
+        <div id="modal-tab-email" class="space-y-4">
+          <div>
+            <label class="text-xs font-semibold text-slate-400 block mb-1">To Professor Email:</label>
+            <div class="flex gap-2">
+              <input type="text" id="modal-email-to" readonly class="w-full bg-darkBg border border-borderDark rounded-xl px-3 py-2 text-xs font-mono text-umn-gold">
+              <button onclick="copyToClipboard('modal-email-to', 'Professor Email')" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-white font-medium flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-400 block mb-1">Subject Line:</label>
+            <div class="flex gap-2">
+              <input type="text" id="modal-email-subject" readonly class="w-full bg-darkBg border border-borderDark rounded-xl px-3 py-2 text-xs font-medium text-white">
+              <button onclick="copyToClipboard('modal-email-subject', 'Subject Line')" class="px-3.5 py-2 rounded-xl bg-umn-gold text-umn-maroonDark hover:bg-umn-goldLight text-xs font-bold flex items-center gap-1 shadow-sm">
+                <i class="fa-solid fa-copy"></i> Copy Subject
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-400 block mb-1">Personalized Email Body:</label>
+            <textarea id="modal-email-body" rows="10" readonly class="w-full bg-darkBg border border-borderDark rounded-xl p-3.5 text-xs text-slate-200 leading-relaxed font-sans focus:outline-none"></textarea>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT 2: SPEECH SCRIPT -->
+        <div id="modal-tab-script" class="space-y-4 hidden">
+          <div class="bg-umn-maroon/20 border border-umn-gold/30 p-4 rounded-xl text-xs text-amber-200 flex items-start gap-2.5">
+            <i class="fa-solid fa-lightbulb text-umn-gold text-base mt-0.5"></i>
+            <div>
+              <span class="font-bold">Pitch Tip for Ezra:</span> Deliver this speech with high energy at the start or end of class. Focus directly on how AI applies to <span id="script-highlight-major" class="underline font-semibold">their target major</span>.
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-slate-400 block mb-1">Custom 60-Second Verbal Script:</label>
+            <div id="modal-script-body" class="bg-darkBg border border-borderDark rounded-xl p-4 text-xs text-slate-200 leading-relaxed space-y-3 font-sans">
+              <!-- Dynamically populated script -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div class="px-6 py-4 border-t border-borderDark bg-darkBg/60 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-slate-400">Update Status:</span>
+          <select id="modal-status-select" onchange="updateModalStatus()" class="bg-darkBg border border-borderDark rounded-lg px-2.5 py-1 text-xs text-white">
+            <option value="To Contact">To Contact</option>
+            <option value="Emailed">Emailed</option>
+            <option value="Approved">Approved</option>
+            <option value="Declined">Declined</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="copyToClipboard('modal-email-body', 'Email Body')" class="px-4 py-2 rounded-xl bg-umn-gold text-umn-maroonDark font-extrabold hover:bg-umn-goldLight text-xs flex items-center gap-1.5 shadow-md">
+            <i class="fa-solid fa-paste"></i>
+            <span>Copy Full Email Body</span>
+          </button>
+          <button onclick="closeEmailModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD NEW CLASS SECTION -->
+  <div id="add-class-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-cardBg border border-borderDark rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-borderDark pb-3">
+        <h3 class="text-base font-bold text-white font-heading">Add New UMN Course Section</h3>
+        <button onclick="closeAddClassModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="add-class-form" onsubmit="handleAddNewClass(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1">Course Code (e.g. MGMT 1001)*</label>
+            <input type="text" id="add-code" required placeholder="MGMT 1001" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Section (e.g. 001)*</label>
+            <input type="text" id="add-section" required placeholder="001" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-400 mb-1">Course Title*</label>
+          <input type="text" id="add-title" required placeholder="Intro to AI Business Strategy" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1">Days (e.g. MWF, TTh)*</label>
+            <input type="text" id="add-days" required placeholder="MWF" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Time (e.g. 10:10 - 11:00 AM)*</label>
+            <input type="text" id="add-time" required placeholder="10:10 AM - 11:00 AM" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1">Building*</label>
+            <select id="add-building" required class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+              <option value="CSOM">CSOM</option>
+              <option value="Hanson Hall">Hanson Hall</option>
+              <option value="Willey Hall">Willey Hall</option>
+              <option value="Blegen Hall">Blegen Hall</option>
+              <option value="Humphrey Center">Humphrey Center</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Room Number*</label>
+            <input type="text" id="add-room" required placeholder="1-102" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1">Professor Name*</label>
+            <input type="text" id="add-prof" required placeholder="Prof. Jane Doe" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Professor Email*</label>
+            <input type="email" id="add-email" required placeholder="jdoe@umn.edu" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1">Class Size*</label>
+            <input type="number" id="add-size" required placeholder="120" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Year Level*</label>
+            <select id="add-level" required class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+              <option value="Freshman">Freshman</option>
+              <option value="Freshman / Sophomore">Freshman / Sophomore</option>
+              <option value="Sophomore">Sophomore</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1">Primary College*</label>
+            <select id="add-college" required class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+              <option value="Carlson School of Management">Carlson School</option>
+              <option value="College of Liberal Arts">College of Liberal Arts</option>
+              <option value="College of Science & Engineering">College of Sci & Eng</option>
+              <option value="Humphrey School">Humphrey School</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">Target Major Focus*</label>
+            <input type="text" id="add-target" required placeholder="Pre-Business & Finance" class="w-full bg-darkBg border border-borderDark rounded-lg p-2 text-white">
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeAddClassModal()" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-lg bg-umn-gold text-umn-maroonDark font-bold hover:bg-umn-goldLight">Save Section</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Initial dataset containing 38 realistic UMN Carlson & West Bank Freshmen/Sophomore courses
+    const INITIAL_CLASSES = [
+      { id: 1, code: 'MGMT 1001', sec: '001', title: 'Contemporary Management', days: 'MWF', time: '09:05 AM - 09:55 AM', bldg: 'Hanson Hall', room: '1-102', prof: 'Prof. Mary Zellmer-Bruhn', email: 'zellm001@umn.edu', size: 120, level: 'Freshman', college: 'Carlson School of Management', target: 'Pre-Business & Mgmt Freshmen', status: 'To Contact', notes: '' },
+      { id: 2, code: 'MGMT 1001', sec: '002', title: 'Contemporary Management', days: 'TTh', time: '10:15 AM - 11:30 AM', bldg: 'CSOM', room: '1-127', prof: 'Prof. Vladislav Buslov', email: 'buslo002@umn.edu', size: 110, level: 'Freshman', college: 'Carlson School of Management', target: 'Pre-Business & Mgmt Freshmen', status: 'To Contact', notes: '' },
+      { id: 3, code: 'BA 1011', sec: '001', title: 'Design Your Life & Career', days: 'Mon', time: '01:25 PM - 02:15 PM', bldg: 'CSOM', room: 'L-110', prof: 'Prof. Rebecca Docherty', email: 'doche005@umn.edu', size: 180, level: 'Freshman', college: 'Carlson School of Management', target: 'Incoming Carlson Freshmen Cohort', status: 'To Contact', notes: '' },
+      { id: 4, code: 'BA 1011', sec: '002', title: 'Design Your Life & Career', days: 'Wed', time: '02:30 PM - 03:20 PM', bldg: 'CSOM', room: 'L-110', prof: 'Prof. Rebecca Docherty', email: 'doche005@umn.edu', size: 175, level: 'Freshman', college: 'Carlson School of Management', target: 'Incoming Carlson Freshmen Cohort', status: 'To Contact', notes: '' },
+      { id: 5, code: 'BA 1021', sec: '001', title: 'Business Computing & AI Tools', days: 'TTh', time: '08:15 AM - 09:30 AM', bldg: 'Hanson Hall', room: '1-108', prof: 'Prof. Alok Gupta', email: 'gupta001@umn.edu', size: 90, level: 'Freshman / Sophomore', college: 'Carlson School of Management', target: 'Business Analytics & MIS Minors', status: 'To Contact', notes: '' },
+      { id: 6, code: 'ECON 1101', sec: '001', title: 'Principles of Microeconomics', days: 'MWF', time: '10:10 AM - 11:00 AM', bldg: 'Willey Hall', room: '125', prof: 'Prof. Thomas Holmes', email: 'holmes@umn.edu', size: 250, level: 'Freshman', college: 'College of Liberal Arts', target: 'CLA Econ & Pre-Business', status: 'To Contact', notes: '' },
+      { id: 7, code: 'ECON 1101', sec: '002', title: 'Principles of Microeconomics', days: 'TTh', time: '01:00 PM - 02:15 PM', bldg: 'Willey Hall', room: '175', prof: 'Prof. Simran Sahi', email: 'sahi0001@umn.edu', size: 220, level: 'Freshman', college: 'College of Liberal Arts', target: 'CLA Econ & Pre-Business', status: 'To Contact', notes: '' },
+      { id: 8, code: 'ECON 1102', sec: '001', title: 'Principles of Macroeconomics', days: 'MWF', time: '11:15 AM - 12:05 PM', bldg: 'Willey Hall', room: '125', prof: 'Prof. Anmol Bhandari', email: 'bhandari@umn.edu', size: 240, level: 'Freshman / Sophomore', college: 'College of Liberal Arts', target: 'Econ & Finance Track', status: 'To Contact', notes: '' },
+      { id: 9, code: 'ECON 1102', sec: '002', title: 'Principles of Macroeconomics', days: 'TTh', time: '02:30 PM - 03:45 PM', bldg: 'Blegen Hall', room: '5', prof: 'Prof. Ellen McGrattan', email: 'erm@umn.edu', size: 190, level: 'Freshman / Sophomore', college: 'College of Liberal Arts', target: 'Econ & Finance Track', status: 'To Contact', notes: '' },
+      { id: 10, code: 'ACCT 2051', sec: '001', title: 'Intro to Financial Accounting', days: 'MWF', time: '08:00 AM - 08:50 AM', bldg: 'CSOM', room: '1-132', prof: 'Prof. David O\'Gara', email: 'dogara@umn.edu', size: 110, level: 'Sophomore', college: 'Carlson School of Management', target: 'Accounting & Finance Sophomores', status: 'To Contact', notes: '' },
+      { id: 11, code: 'ACCT 2051', sec: '002', title: 'Intro to Financial Accounting', days: 'TTh', time: '09:45 AM - 11:00 AM', bldg: 'CSOM', room: '1-142', prof: 'Prof. Pervin Shroff', email: 'shroff@umn.edu', size: 105, level: 'Sophomore', college: 'Carlson School of Management', target: 'Accounting & Finance Sophomores', status: 'To Contact', notes: '' },
+      { id: 12, code: 'ACCT 2051', sec: '003', title: 'Intro to Financial Accounting', days: 'MWF', time: '01:25 PM - 02:15 PM', bldg: 'Hanson Hall', room: '1-104', prof: 'Prof. David O\'Gara', email: 'dogara@umn.edu', size: 115, level: 'Sophomore', college: 'Carlson School of Management', target: 'Accounting & Finance Sophomores', status: 'To Contact', notes: '' },
+      { id: 13, code: 'IDSC 2001', sec: '001', title: 'Intro to Info Systems & Data', days: 'MWF', time: '11:15 AM - 12:05 PM', bldg: 'CSOM', room: 'L-110', prof: 'Prof. Soumya Sen', email: 'rsen@umn.edu', size: 160, level: 'Sophomore', college: 'Carlson School of Management', target: 'MIS & Business Analytics', status: 'To Contact', notes: '' },
+      { id: 14, code: 'IDSC 2001', sec: '002', title: 'Intro to Info Systems & Data', days: 'TTh', time: '01:00 PM - 02:15 PM', bldg: 'Hanson Hall', room: '1-102', prof: 'Prof. Ken Reily', email: 'reily@umn.edu', size: 140, level: 'Sophomore', college: 'Carlson School of Management', target: 'MIS & Business Analytics', status: 'To Contact', notes: '' },
+      { id: 15, code: 'SCO 2588', sec: '001', title: 'Business Statistics & Analytics', days: 'MWF', time: '09:05 AM - 09:55 AM', bldg: 'CSOM', room: '2-215', prof: 'Prof. William Li', email: 'wli@umn.edu', size: 85, level: 'Sophomore', college: 'Carlson School of Management', target: 'Supply Chain & Operations', status: 'To Contact', notes: '' },
+      { id: 16, code: 'SCO 2588', sec: '002', title: 'Business Statistics & Analytics', days: 'TTh', time: '11:15 AM - 12:30 PM', bldg: 'CSOM', room: '2-215', prof: 'Prof. Xuan Bi', email: 'xbi@umn.edu', size: 90, level: 'Sophomore', college: 'Carlson School of Management', target: 'Supply Chain & Operations', status: 'To Contact', notes: '' },
+      { id: 17, code: 'MKTG 3001', sec: '001', title: 'Principles of Marketing', days: 'TTh', time: '08:15 AM - 09:30 AM', bldg: 'Willey Hall', room: '175', prof: 'Prof. Mark Bergen', email: 'mbergen@umn.edu', size: 180, level: 'Sophomore', college: 'Carlson School of Management', target: 'Marketing & Retail Sophomores', status: 'To Contact', notes: '' },
+      { id: 18, code: 'MKTG 3001', sec: '002', title: 'Principles of Marketing', days: 'MWF', time: '02:30 PM - 03:20 PM', bldg: 'Hanson Hall', room: '1-102', prof: 'Prof. George John', email: 'gjohn@umn.edu', size: 150, level: 'Sophomore', college: 'Carlson School of Management', target: 'Marketing & Retail Sophomores', status: 'To Contact', notes: '' },
+      { id: 19, code: 'FINA 3001', sec: '001', title: 'Finance Fundamentals', days: 'MWF', time: '10:10 AM - 11:00 AM', bldg: 'CSOM', room: 'L-110', prof: 'Prof. Tracy Yue Wang', email: 'wang@umn.edu', size: 170, level: 'Sophomore', college: 'Carlson School of Management', target: 'Corporate Finance & Banking', status: 'To Contact', notes: '' },
+      { id: 20, code: 'FINA 3001', sec: '002', title: 'Finance Fundamentals', days: 'TTh', time: '02:30 PM - 03:45 PM', bldg: 'CSOM', room: '1-127', prof: 'Prof. Martin Szydlowski', email: 'mszydlow@umn.edu', size: 160, level: 'Sophomore', college: 'Carlson School of Management', target: 'Corporate Finance & Banking', status: 'To Contact', notes: '' },
+      { id: 21, code: 'BA 2551', sec: '001', title: 'Business Statistics in Python', days: 'MWF', time: '12:20 PM - 01:10 PM', bldg: 'CSOM', room: '1-142', prof: 'Prof. Yuchen Liu', email: 'yuchenl@umn.edu', size: 95, level: 'Freshman / Sophomore', college: 'Carlson School of Management', target: 'Business Analytics & Data', status: 'To Contact', notes: '' },
+      { id: 22, code: 'PSY 1001', sec: '001', title: 'Introduction to Psychology', days: 'MWF', time: '01:25 PM - 02:15 PM', bldg: 'Willey Hall', room: '175', prof: 'Prof. Wilma Koutstaal', email: 'kouts001@umn.edu', size: 320, level: 'Freshman', college: 'College of Liberal Arts', target: 'Psychology & Behavioral Econ', status: 'To Contact', notes: '' },
+      { id: 23, code: 'PSY 1001', sec: '002', title: 'Introduction to Psychology', days: 'TTh', time: '09:45 AM - 11:00 AM', bldg: 'Willey Hall', room: '125', prof: 'Prof. Colin DeYoung', email: 'cdeyoung@umn.edu', size: 280, level: 'Freshman', college: 'College of Liberal Arts', target: 'Psychology & Pre-Business', status: 'To Contact', notes: '' },
+      { id: 24, code: 'WRIT 1301', sec: '001', title: 'University Writing & Comm', days: 'MWF', time: '09:05 AM - 09:55 AM', bldg: 'Blegen Hall', room: '130', prof: 'Prof. Amy Lee', email: 'amylee@umn.edu', size: 45, level: 'Freshman', college: 'College of Liberal Arts', target: 'CLA Freshmen First-Year Writing', status: 'To Contact', notes: '' },
+      { id: 25, code: 'WRIT 1301', sec: '002', title: 'University Writing & Comm', days: 'TTh', time: '11:15 AM - 12:30 PM', bldg: 'Blegen Hall', room: '215', prof: 'Prof. Donald Ross', email: 'dross@umn.edu', size: 45, level: 'Freshman', college: 'College of Liberal Arts', target: 'CLA Freshmen First-Year Writing', status: 'To Contact', notes: '' },
+      { id: 26, code: 'MATH 1142', sec: '001', title: 'Short Calculus for Business', days: 'MWF', time: '10:10 AM - 11:00 AM', bldg: 'Blegen Hall', room: '10', prof: 'Prof. Bryan Mosher', email: 'bmosher@umn.edu', size: 140, level: 'Freshman', college: 'College of Science & Engineering', target: 'Pre-Business & Econ Math', status: 'To Contact', notes: '' },
+      { id: 27, code: 'MATH 1142', sec: '002', title: 'Short Calculus for Business', days: 'TTh', time: '01:00 PM - 02:15 PM', bldg: 'Blegen Hall', room: '5', prof: 'Prof. Jonathan Rogness', email: 'rogness@umn.edu', size: 130, level: 'Freshman', college: 'College of Science & Engineering', target: 'Pre-Business & Econ Math', status: 'To Contact', notes: '' },
+      { id: 28, code: 'CSCL 1001', sec: '001', title: 'Intro to Culture & Tech', days: 'TTh', time: '02:30 PM - 03:45 PM', bldg: 'Blegen Hall', room: '235', prof: 'Prof. Cesare Casarino', email: 'casarino@umn.edu', size: 75, level: 'Freshman / Sophomore', college: 'College of Liberal Arts', target: 'Digital Culture & Tech Studies', status: 'To Contact', notes: '' },
+      { id: 29, code: 'STAT 3011', sec: '001', title: 'Introduction to Statistical Analysis', days: 'MWF', time: '11:15 AM - 12:05 PM', bldg: 'Blegen Hall', room: '150', prof: 'Prof. Snigdhansu Chatterjee', email: 'chatte001@umn.edu', size: 120, level: 'Freshman / Sophomore', college: 'College of Science & Engineering', target: 'Data Science & Analytics', status: 'To Contact', notes: '' },
+      { id: 30, code: 'COMM 1101', sec: '001', title: 'Public Speaking & Pitching', days: 'MWF', time: '08:00 AM - 08:50 AM', bldg: 'Blegen Hall', room: '210', prof: 'Prof. Karlyn Kohrs Campbell', email: 'campbell@umn.edu', size: 50, level: 'Freshman', college: 'College of Liberal Arts', target: 'Comm & Entrepreneurship', status: 'To Contact', notes: '' },
+      { id: 31, code: 'CSCI 1133', sec: '001', title: 'Intro to Programming Python', days: 'TTh', time: '10:00 AM - 11:15 AM', bldg: 'Willey Hall', room: '125', prof: 'Prof. Daniel Keefe', email: 'dfkeefe@umn.edu', size: 230, level: 'Freshman / Sophomore', college: 'College of Science & Engineering', target: 'CS & Data Science Minors', status: 'To Contact', notes: '' },
+      { id: 32, code: 'CSCI 1933', sec: '001', title: 'Intro to Data Structures', days: 'MWF', time: '01:25 PM - 02:15 PM', bldg: 'Willey Hall', room: '175', prof: 'Prof. Chris Dovolis', email: 'dovolis@umn.edu', size: 210, level: 'Sophomore', college: 'College of Science & Engineering', target: 'Computer Science Sophomores', status: 'To Contact', notes: '' },
+      { id: 33, code: 'BA 2051', sec: '001', title: 'Direct Business Writing', days: 'TTh', time: '01:00 PM - 02:15 PM', bldg: 'CSOM', room: '2-215', prof: 'Prof. Lori Biederman', email: 'lbiederm@umn.edu', size: 60, level: 'Sophomore', college: 'Carlson School of Management', target: 'Carlson Sophomore Writing', status: 'To Contact', notes: '' },
+      { id: 34, code: 'PA 2001', sec: '001', title: 'Public Policy & Tech Innovation', days: 'Wed', time: '03:30 PM - 06:00 PM', bldg: 'Humphrey Center', room: '25', prof: 'Prof. Steve Kelley', email: 'skelley@umn.edu', size: 65, level: 'Sophomore', college: 'Humphrey School', target: 'Tech Policy & Public Affairs', status: 'To Contact', notes: '' },
+      { id: 35, code: 'MGMT 3001', sec: '001', title: 'Fundamentals of Management', days: 'MWF', time: '12:20 PM - 01:10 PM', bldg: 'Hanson Hall', room: '1-108', prof: 'Prof. Theresa Glomb', email: 'tglomb@umn.edu', size: 110, level: 'Sophomore', college: 'Carlson School of Management', target: 'Entrepreneurship & HR', status: 'To Contact', notes: '' },
+      { id: 36, code: 'ECON 3101', sec: '001', title: 'Intermediate Microeconomics', days: 'TTh', time: '09:45 AM - 11:00 AM', bldg: 'Blegen Hall', room: '10', prof: 'Prof. Aldo Rustichini', email: 'arust@umn.edu', size: 95, level: 'Sophomore', college: 'College of Liberal Arts', target: 'Econ Majors & Quantitative Finance', status: 'To Contact', notes: '' },
+      { id: 37, code: 'IDSC 3001', sec: '001', title: 'Information Systems Analysis', days: 'TTh', time: '02:30 PM - 03:45 PM', bldg: 'CSOM', room: '1-142', prof: 'Prof. Gordon Davis', email: 'gdavis@umn.edu', size: 70, level: 'Sophomore', college: 'Carlson School of Management', target: 'MIS & Business Tech Majors', status: 'To Contact', notes: '' },
+      { id: 38, code: 'BA 1001', sec: '001', title: 'Business Orientation & Tech', days: 'Mon', time: '09:05 AM - 09:55 AM', bldg: 'CSOM', room: 'L-110', prof: 'Prof. Janeth Campbell', email: 'jcampb@umn.edu', size: 200, level: 'Freshman', college: 'Carlson School of Management', target: 'All Incoming Carlson Freshmen', status: 'To Contact', notes: '' }
+    ];
+
+    // Global App State
+    let classes = [];
+    let selectedClass = null;
+    let activeDay = 'Mon';
+    let pitchTimerInterval = null;
+    let timerSeconds = 60;
+    let isTimerRunning = false;
+
+    // LocalStorage Key
+    const STORAGE_KEY = 'umn_ai_club_workspace_ezra_v2';
+
+    // Initialize application on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      renderDashboard();
+      renderItinerary();
+      setupIframeFallbackCheck();
+    });
+
+    // Load data from LocalStorage or initialize default dataset
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          classes = JSON.parse(saved);
+        } catch(e) {
+          classes = JSON.parse(JSON.stringify(INITIAL_CLASSES));
+        }
+      } else {
+        classes = JSON.parse(JSON.stringify(INITIAL_CLASSES));
+        saveState();
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(classes));
+      updateDashboardStats();
+    }
+
+    // Reset all statuses to "To Contact" (Unconfirm All)
+    function unconfirmAllClasses() {
+      classes.forEach(c => {
+        c.status = 'To Contact';
+      });
+      saveState();
+      applyFilters();
+      renderItinerary();
+      showToast('All classes reset to "To Contact" (Unconfirmed)', 'info');
+    }
+
+    // Switch Main Top Tabs
+    function switchTab(tabName) {
+      document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-umn-maroon', 'text-white', 'shadow-md');
+        btn.classList.add('text-slate-300', 'hover:bg-slate-800');
+      });
+
+      const activeBtn = document.getElementById(`tab-${tabName}`);
+      activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-800');
+      activeBtn.classList.add('bg-umn-maroon', 'text-white', 'shadow-md');
+
+      if (tabName === 'route') {
+        renderItinerary();
+      }
+    }
+
+    // Render Dashboard Table and Metrics
+    function renderDashboard() {
+      applyFilters();
+      updateDashboardStats();
+    }
+
+    function updateDashboardStats() {
+      const totalStudents = classes.reduce((sum, c) => sum + c.size, 0);
+      const totalSections = classes.length;
+      const contactedCount = classes.filter(c => c.status !== 'To Contact').length;
+      const freshmanCount = classes.filter(c => c.level.includes('Freshman')).length;
+      const freshmanPct = Math.round((freshmanCount / totalSections) * 100);
+
+      document.getElementById('stat-total-students').textContent = totalStudents.toLocaleString() + '+';
+      document.getElementById('stat-total-sections').textContent = totalSections + ' Sections';
+      document.getElementById('stat-contacted-count').textContent = `${contactedCount} / ${totalSections}`;
+      
+      const pct = Math.round((contactedCount / totalSections) * 100);
+      document.getElementById('stat-pipeline-bar').style.width = `${pct}%`;
+      document.getElementById('stat-freshman-pct').textContent = `${freshmanPct}%`;
+    }
+
+    // Filter table content
+    function applyFilters() {
+      const search = document.getElementById('filter-search').value.toLowerCase();
+      const status = document.getElementById('filter-status').value;
+      const level = document.getElementById('filter-level').value;
+      const college = document.getElementById('filter-college').value;
+      const building = document.getElementById('filter-building').value;
+
+      const filtered = classes.filter(c => {
+        const matchesSearch = c.code.toLowerCase().includes(search) ||
+                              c.title.toLowerCase().includes(search) ||
+                              c.prof.toLowerCase().includes(search) ||
+                              c.target.toLowerCase().includes(search);
+        const matchesStatus = (status === 'ALL') || (c.status === status);
+        const matchesLevel = (level === 'ALL') || (c.level === level);
+        const matchesCollege = (college === 'ALL') || (c.college === college);
+        const matchesBuilding = (building === 'ALL') || (c.bldg === building);
+
+        return matchesSearch && matchesStatus && matchesLevel && matchesCollege && matchesBuilding;
+      });
+
+      renderTableRows(filtered);
+      document.getElementById('table-count-badge').textContent = `Showing ${filtered.length} / ${classes.length} sections`;
+    }
+
+    function resetFilters() {
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-status').value = 'ALL';
+      document.getElementById('filter-level').value = 'ALL';
+      document.getElementById('filter-college').value = 'ALL';
+      document.getElementById('filter-building').value = 'ALL';
+      applyFilters();
+    }
+
+    // Render Table Rows HTML
+    function renderTableRows(dataset) {
+      const tbody = document.getElementById('class-table-body');
+      tbody.innerHTML = '';
+
+      if (dataset.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="p-8 text-center text-slate-400">
+              <i class="fa-solid fa-folder-open text-3xl mb-2 text-slate-500 block"></i>
+              No course sections match your filter criteria.
+            </td>
+          </tr>`;
+        return;
+      }
+
+      dataset.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/50 transition-colors border-b border-borderDark/40 group";
+
+        // Status Badge Style
+        let statusStyle = 'bg-amber-950/60 text-amber-300 border-amber-800/40';
+        if (c.status === 'Emailed') statusStyle = 'bg-blue-950/60 text-blue-300 border-blue-800/40';
+        if (c.status === 'Approved') statusStyle = 'bg-emerald-950/60 text-emerald-300 border-emerald-800/40';
+        if (c.status === 'Declined') statusStyle = 'bg-rose-950/60 text-rose-300 border-rose-800/40';
+
+        tr.innerHTML = `
+          <td class="p-4 font-mono font-bold text-white whitespace-nowrap">
+            <div>${c.code}-${c.sec}</div>
+            <div class="text-[10px] text-slate-400 font-sans font-normal truncate max-w-[150px]">${c.title}</div>
+          </td>
+          <td class="p-4 text-slate-200">
+            <span class="font-medium text-umn-gold">${c.target}</span>
+          </td>
+          <td class="p-4">
+            <div class="text-xs font-semibold text-slate-200">${c.level}</div>
+            <div class="text-[10px] text-slate-400">${c.college}</div>
+          </td>
+          <td class="p-4 whitespace-nowrap">
+            <div class="font-semibold text-slate-300">${c.days} • ${c.time}</div>
+            <div class="text-[10px] text-slate-400"><i class="fa-solid fa-location-dot text-umn-gold mr-1"></i>${c.bldg} ${c.room}</div>
+          </td>
+          <td class="p-4 text-slate-300 font-medium whitespace-nowrap">
+            <i class="fa-solid fa-users text-slate-500 mr-1"></i>${c.size}
+          </td>
+          <td class="p-4">
+            <div class="font-medium text-white">${c.prof}</div>
+            <a href="mailto:${c.email}" class="text-[10px] text-umn-gold hover:underline font-mono">${c.email}</a>
+          </td>
+          <td class="p-4 whitespace-nowrap">
+            <select onchange="updateClassStatus(${c.id}, this.value)" class="text-xs border px-2.5 py-1 rounded-lg font-medium bg-darkBg ${statusStyle} focus:outline-none cursor-pointer">
+              <option value="To Contact" ${c.status === 'To Contact' ? 'selected' : ''}>To Contact</option>
+              <option value="Emailed" ${c.status === 'Emailed' ? 'selected' : ''}>Emailed</option>
+              <option value="Approved" ${c.status === 'Approved' ? 'selected' : ''}>Approved</option>
+              <option value="Declined" ${c.status === 'Declined' ? 'selected' : ''}>Declined</option>
+            </select>
+          </td>
+          <td class="p-4 text-right whitespace-nowrap">
+            <button onclick="openEmailModal(${c.id})" class="px-3 py-1.5 rounded-lg bg-umn-maroon/80 hover:bg-umn-maroon text-umn-gold border border-umn-gold/30 font-semibold text-xs transition-all shadow-sm flex items-center gap-1.5 ml-auto">
+              <i class="fa-solid fa-envelope-open-text"></i>
+              <span>Email & Pitch</span>
+            </button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Direct status update from dropdown
+    function updateClassStatus(id, newStatus) {
+      const cls = classes.find(c => c.id === id);
+      if (cls) {
+        cls.status = newStatus;
+        saveState();
+        applyFilters();
+        renderItinerary();
+        showToast(`Status updated for ${cls.code} to "${newStatus}"`, 'success');
+      }
+    }
+
+    // Modal controls for Email & Pitch Script Generator
+    function openEmailModal(id) {
+      selectedClass = classes.find(c => c.id === id);
+      if (!selectedClass) return;
+
+      document.getElementById('modal-class-title').textContent = `${selectedClass.code}-${selectedClass.sec}: ${selectedClass.title}`;
+      document.getElementById('modal-class-subtitle').textContent = `Target Major: ${selectedClass.target} • ${selectedClass.prof}`;
+      document.getElementById('modal-email-to').value = selectedClass.email;
+      document.getElementById('modal-status-select').value = selectedClass.status;
+      document.getElementById('script-highlight-major').textContent = selectedClass.target;
+
+      // Generate dynamic email subject & body tailored for Ezra
+      const profLastName = selectedClass.prof.replace('Prof. ', '').split(' ').pop();
+      const subject = `Guest Pitch Request: 60-Sec AI in Business Club Intro for ${selectedClass.code} (${selectedClass.target})`;
+      
+      const body = `Dear Professor ${profLastName},
+
+I hope your semester is off to a great start!
+
+My name is Ezra, and I am the President and Founder of the AI in Business Club at the Carlson School of Management. 
+
+I am reaching out because I would love to request 60 to 90 seconds at the start or end of one of your upcoming ${selectedClass.code} lectures (${selectedClass.days} at ${selectedClass.time} in ${selectedClass.bldg} ${selectedClass.room}) to briefly introduce our student organization to your students.
+
+Our club specifically equips students in ${selectedClass.target} with practical hands-on skills in artificial intelligence, workflow automation, financial modeling tools, and career networking. As dynamic AI adoption accelerates across all industries, we want to ensure incoming freshmen and sophomores build this competitive advantage early in their academic journey.
+
+We promise to be extremely concise and respectful of your classroom time. 
+
+Would you be open to allowing me to drop by for a quick 60-second pitch during an upcoming class session? Thank you so much for your time and leadership!
+
+Warm regards,
+
+Ezra
+Founder & President | AI in Business Club
+Carlson School of Management | University of Minnesota
+Email: ezra-aiclub@umn.edu | Phone: (612) 555-0199`;
+
+      document.getElementById('modal-email-subject').value = subject;
+      document.getElementById('modal-email-body').value = body;
+
+      // Generate customized speech script for Ezra
+      const scriptBody = document.getElementById('modal-script-body');
+      scriptBody.innerHTML = `
+        <p><strong class="text-umn-gold">[Hook - 0-15s]:</strong> "Hi everyone! Professor ${profLastName}, thank you so much for giving me 60 seconds. My name is Ezra, and I'm the founder of the AI in Business Club here at Carlson."</p>
+        <p><strong class="text-umn-gold">[Relevance to Major - 15-35s]:</strong> "Whether you are planning to major in ${selectedClass.target} or exploring business options, AI tools are changing how companies analyze data, execute marketing campaigns, and build financial models right now."</p>
+        <p><strong class="text-umn-gold">[What We Do - 35-50s]:</strong> "Our club hosts hands-on workshops where you build real AI tools, participate in employer-sponsored case competitions, and network with top alumni. No prior coding background is needed at all."</p>
+        <p><strong class="text-umn-gold">[Call to Action - 50-60s]:</strong> "Our kick-off meeting is this Thursday at 6:00 PM right here in CSOM. Scan the QR code on the screen or grab a flyer on your way out. Look forward to seeing you there!"</p>
+      `;
+
+      document.getElementById('email-modal').classList.remove('hidden');
+    }
+
+    function closeEmailModal() {
+      document.getElementById('email-modal').classList.add('hidden');
+    }
+
+    function switchModalTab(tab) {
+      if (tab === 'email') {
+        document.getElementById('modal-tab-email').classList.remove('hidden');
+        document.getElementById('modal-tab-script').classList.add('hidden');
+        document.getElementById('modal-tab-email-btn').className = 'pb-2 text-xs font-bold border-b-2 border-umn-gold text-umn-gold';
+        document.getElementById('modal-tab-script-btn').className = 'pb-2 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-white';
+      } else {
+        document.getElementById('modal-tab-email').classList.add('hidden');
+        document.getElementById('modal-tab-script').classList.remove('hidden');
+        document.getElementById('modal-tab-email-btn').className = 'pb-2 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-white';
+        document.getElementById('modal-tab-script-btn').className = 'pb-2 text-xs font-bold border-b-2 border-umn-gold text-umn-gold';
+      }
+    }
+
+    function updateModalStatus() {
+      if (!selectedClass) return;
+      const newStatus = document.getElementById('modal-status-select').value;
+      updateClassStatus(selectedClass.id, newStatus);
+    }
+
+    // Add New Class Modal Controls
+    function openAddClassModal() {
+      document.getElementById('add-class-modal').classList.remove('hidden');
+    }
+
+    function closeAddClassModal() {
+      document.getElementById('add-class-modal').classList.add('hidden');
+    }
+
+    function handleAddNewClass(e) {
+      e.preventDefault();
+      const newCls = {
+        id: Date.now(),
+        code: document.getElementById('add-code').value.toUpperCase(),
+        sec: document.getElementById('add-section').value,
+        title: document.getElementById('add-title').value,
+        days: document.getElementById('add-days').value,
+        time: document.getElementById('add-time').value,
+        bldg: document.getElementById('add-building').value,
+        room: document.getElementById('add-room').value,
+        prof: document.getElementById('add-prof').value,
+        email: document.getElementById('add-email').value,
+        size: parseInt(document.getElementById('add-size').value) || 50,
+        level: document.getElementById('add-level').value,
+        college: document.getElementById('add-college').value,
+        target: document.getElementById('add-target').value,
+        status: 'To Contact',
+        notes: ''
+      };
+
+      classes.push(newCls);
+      saveState();
+      applyFilters();
+      closeAddClassModal();
+      showToast(`Added section ${newCls.code}-${newCls.sec} successfully!`, 'success');
+    }
+
+    // West Bank Itinerary and Walking Map Generator
+    function selectDay(day) {
+      activeDay = day;
+      document.querySelectorAll('.day-btn').forEach(btn => {
+        if (btn.dataset.day === day) {
+          btn.className = 'day-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-umn-maroon text-white';
+        } else {
+          btn.className = 'day-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white';
+        }
+      });
+      document.getElementById('map-active-day-tag').textContent = `${day === 'Mon' ? 'Monday' : day === 'Tue' ? 'Tuesday' : day === 'Wed' ? 'Wednesday' : day === 'Thu' ? 'Thursday' : 'Friday'} Route`;
+      renderItinerary();
+    }
+
+    function renderItinerary() {
+      const container = document.getElementById('itinerary-list');
+      container.innerHTML = '';
+
+      // Filter classes held on activeDay (e.g. MWF includes Mon, Wed, Fri)
+      const dayClasses = classes.filter(c => {
+        if (activeDay === 'Mon') return c.days.includes('M') || c.days.includes('Mon');
+        if (activeDay === 'Tue') return c.days.includes('T') && !c.days.includes('Th');
+        if (activeDay === 'Wed') return c.days.includes('W') || c.days.includes('Wed');
+        if (activeDay === 'Thu') return c.days.includes('Th');
+        if (activeDay === 'Fri') return c.days.includes('F') || c.days.includes('Fri');
+        return false;
+      });
+
+      document.getElementById('itinerary-count').textContent = `${dayClasses.length} Target Sections`;
+
+      // Update Map Badges
+      const buildingCounts = { 'CSOM': 0, 'Hanson Hall': 0, 'Willey Hall': 0, 'Blegen Hall': 0, 'Humphrey Center': 0 };
+      dayClasses.forEach(c => {
+        if (buildingCounts[c.bldg] !== undefined) {
+          buildingCounts[c.bldg]++;
+        }
+      });
+
+      Object.keys(buildingCounts).forEach(bldg => {
+        const badgeElem = document.getElementById(`count-${bldg}`);
+        if (badgeElem) badgeElem.textContent = buildingCounts[bldg];
+      });
+
+      if (dayClasses.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center text-slate-400 text-xs">No classes scheduled on this day.</div>`;
+        return;
+      }
+
+      // Sort chronologically by start time
+      dayClasses.sort((a, b) => a.time.localeCompare(b.time));
+
+      dayClasses.forEach((c, idx) => {
+        const card = document.createElement('div');
+        card.className = "bg-darkBg border border-borderDark p-3.5 rounded-xl flex items-center justify-between gap-3 hover:border-umn-gold/40 transition-all";
+
+        card.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-umn-maroon/40 border border-umn-gold/30 flex items-center justify-center text-umn-gold font-bold text-xs font-mono">
+              ${idx + 1}
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-white text-xs">${c.code}-${c.sec}</span>
+                <span class="text-[10px] text-umn-gold bg-umn-gold/10 px-1.5 py-0.5 rounded font-medium">${c.bldg} ${c.room}</span>
+              </div>
+              <p class="text-[11px] text-slate-300">${c.title}</p>
+              <div class="text-[10px] text-slate-400 mt-0.5">${c.time} • Prof. ${c.prof}</div>
+            </div>
+          </div>
+
+          <button onclick="openEmailModal(${c.id})" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-umn-gold text-xs font-medium">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function filterByBuildingMap(bldgName) {
+      switchTab('dashboard');
+      document.getElementById('filter-building').value = bldgName;
+      applyFilters();
+      showToast(`Filtered database for ${bldgName}`, 'info');
+    }
+
+    // Presentation Pitch Timer Logic
+    function togglePitchTimer() {
+      if (isTimerRunning) {
+        pausePitchTimer();
+      } else {
+        startPitchTimer();
+      }
+    }
+
+    function startPitchTimer() {
+      if (isTimerRunning) return;
+      isTimerRunning = true;
+      document.getElementById('btn-timer-start').innerHTML = '<i class="fa-solid fa-pause text-base"></i>';
+      document.getElementById('pitch-timer-card').classList.add('timer-active');
+
+      pitchTimerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay();
+        } else {
+          pausePitchTimer();
+          playTimerBeep();
+          showToast("Ezra's 60-Second Pitch Time Complete!", 'warning');
+        }
+      }, 1000);
+    }
+
+    function pausePitchTimer() {
+      isTimerRunning = false;
+      clearInterval(pitchTimerInterval);
+      document.getElementById('btn-timer-start').innerHTML = '<i class="fa-solid fa-play text-base"></i>';
+      document.getElementById('pitch-timer-card').classList.remove('timer-active');
+    }
+
+    function resetPitchTimer() {
+      pausePitchTimer();
+      timerSeconds = 60;
+      updateTimerDisplay();
+    }
+
+    function adjustPitchTimer(sec) {
+      timerSeconds += sec;
+      if (timerSeconds < 0) timerSeconds = 0;
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timer-display').textContent = 
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function playTimerBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      } catch(e) {}
+    }
+
+    function toggleFullscreenEmbed() {
+      const container = document.getElementById('presentation-frame-container');
+      if (!document.fullscreenElement) {
+        container.requestFullscreen().catch(err => {
+          showToast("Fullscreen not supported by browser", "warning");
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    function setupIframeFallbackCheck() {
+      // Show fallback if iframe cannot load due to CORS/Frame options
+      const iframe = document.getElementById('presentation-iframe');
+      setTimeout(() => {
+        try {
+          if (!iframe.contentWindow || iframe.contentWindow.length === 0) {
+            // Keep iframe, but allow user to click fallback link if needed
+          }
+        } catch(e) {
+          // Cross-origin restriction expected for external domains
+        }
+      }, 2000);
+    }
+
+    // Helper: Copy to Clipboard with Toast feedback
+    function copyToClipboard(elementId, label) {
+      const input = document.getElementById(elementId);
+      if (!input) return;
+
+      const text = input.value || input.innerText;
+      
+      // Fallback copy execution for iFrame safety
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = text;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      try {
+        document.execCommand('copy');
+        showToast(`Copied ${label} to clipboard!`, 'success');
+      } catch (err) {
+        showToast('Failed to copy text', 'warning');
+      }
+      document.body.removeChild(tempTextArea);
+    }
+
+    // Toast Notification Utility
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+
+      let bgStyle = 'bg-slate-900 border-borderDark text-white';
+      let icon = 'fa-circle-info text-umn-gold';
+
+      if (type === 'success') {
+        bgStyle = 'bg-emerald-950 border-emerald-800 text-emerald-200';
+        icon = 'fa-circle-check text-emerald-400';
+      } else if (type === 'warning') {
+        bgStyle = 'bg-amber-950 border-amber-800 text-amber-200';
+        icon = 'fa-triangle-exclamation text-amber-400';
+      }
+
+      toast.className = `${bgStyle} border p-3.5 rounded-xl shadow-2xl flex items-center gap-3 text-xs pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0 max-w-sm`;
+      toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i><span>${message}</span>`;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
