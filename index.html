@@ -1,16 +1,17 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UMN Course Outreach CRM</title>
+  <title>UMN Course Outreach & Classroom Pitch CRM</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Custom Tailwind Color & Theme Configuration -->
+  <!-- Tailwind Configuration for UMN Branding & Dark Theme -->
   <script>
     tailwind.config = {
       theme: {
@@ -19,15 +20,17 @@
             umn: {
               maroon: '#7A0019',
               maroonDark: '#5A0012',
+              maroonLight: '#9E0021',
               gold: '#FFCC33',
               goldHover: '#E6B800'
             },
             appBg: '#0F172A',
             cardBg: '#1E293B',
+            cardHeader: '#0F172A',
             borderDark: '#334155'
           },
           fontFamily: {
-            heading: ['Inter', 'sans-serif']
+            sans: ['Inter', 'system-ui', 'sans-serif']
           }
         }
       }
@@ -35,317 +38,1148 @@
   </script>
   <style>
     .modal-backdrop {
-      background-color: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(4px);
+      background-color: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(6px);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0F172A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
     }
   </style>
 </head>
-<body class="bg-appBg text-slate-100 min-h-screen font-sans antialiased flex flex-col">
+<body class="bg-appBg text-slate-100 min-h-screen font-sans antialiased flex flex-col selection:bg-umn-gold selection:text-umn-maroonDark">
 
-  <!-- ================= HEADER & NAVIGATION ================= -->
-  <header class="bg-cardBg border-b border-borderDark sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-      <!-- App Brand -->
-      <div class="flex items-center space-x-3">
-        <div class="w-9 h-9 bg-umn-maroon rounded-xl flex items-center justify-center font-bold text-umn-gold border border-umn-gold/30">
-          M
+  <!-- ================= HEADER & TOP NAVIGATION ================= -->
+  <header class="bg-cardBg border-b border-borderDark sticky top-0 z-40 shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between h-auto md:h-20 py-3 md:py-0 gap-3">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-umn-maroon rounded-2xl flex items-center justify-center font-black text-xl text-umn-gold border border-umn-gold/40 shadow-lg shadow-umn-maroon/50">
+            M
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-base font-bold text-white tracking-tight">UMN Classroom Outreach CRM</h1>
+              <span class="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-umn-gold text-umn-maroonDark">v2.5 Pro</span>
+            </div>
+            <p class="text-xs text-slate-400">Speaker Presentation & Route Optimization System</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-base font-bold text-white tracking-tight">UMN Outreach CRM</h1>
-          <p class="text-xs text-slate-400">Course & Instructor Navigation</p>
-        </div>
+
+        <!-- Mobile Add Button -->
+        <button onclick="openAddClassModal()" class="md:hidden px-3 py-1.5 text-xs font-bold bg-umn-gold text-umn-maroonDark rounded-xl flex items-center gap-1">
+          <i class="fa-solid fa-plus"></i> Add
+        </button>
       </div>
 
-      <!-- Navigation Tabs -->
-      <nav class="flex space-x-2 bg-slate-900/60 p-1 rounded-xl border border-borderDark">
+      <!-- Navigation Tabs (4 Core Views) -->
+      <nav class="flex space-x-1 sm:space-x-2 bg-slate-900/80 p-1.5 rounded-2xl border border-borderDark w-full md:w-auto overflow-x-auto">
         <button id="tab-dashboard" onclick="switchTab('dashboard')"
-                class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all bg-umn-maroon text-white shadow-md">
-          <i class="fa-solid fa-chart-pie"></i>
-          Dashboard
+                class="tab-btn flex-1 md:flex-initial px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all bg-umn-maroon text-white shadow-md">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Dashboard</span>
         </button>
         <button id="tab-route" onclick="switchTab('route')"
-                class="tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-2 transition-all hover:bg-slate-800">
-          <i class="fa-solid fa-map-location-dot"></i>
-          Route View
+                class="tab-btn flex-1 md:flex-initial px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all hover:bg-slate-800">
+          <i class="fa-solid fa-route"></i>
+          <span>Route Optimizer</span>
+        </button>
+        <button id="tab-pitch" onclick="switchTab('pitch')"
+                class="tab-btn flex-1 md:flex-initial px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all hover:bg-slate-800">
+          <i class="fa-solid fa-display"></i>
+          <span>Speaker Pitches</span>
+        </button>
+        <button id="tab-analytics" onclick="switchTab('analytics')"
+                class="tab-btn flex-1 md:flex-initial px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all hover:bg-slate-800">
+          <i class="fa-solid fa-chart-column"></i>
+          <span>Analytics</span>
         </button>
       </nav>
 
-      <!-- Global Actions -->
-      <div class="flex items-center space-x-2">
-        <button onclick="openAddClassModal()" class="px-3.5 py-2 text-xs font-bold bg-umn-gold hover:bg-umn-goldHover text-umn-maroonDark rounded-xl transition flex items-center gap-2 shadow-sm">
+      <!-- Header Action Buttons -->
+      <div class="hidden md:flex items-center space-x-2">
+        <button onclick="exportCSV()" class="px-3.5 py-2 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-borderDark rounded-xl transition flex items-center gap-2">
+          <i class="fa-solid fa-file-csv text-emerald-400"></i>
+          Export
+        </button>
+        <button onclick="openAddClassModal()" class="px-4 py-2 text-xs font-bold bg-umn-gold hover:bg-umn-goldHover text-umn-maroonDark rounded-xl transition flex items-center gap-2 shadow-lg shadow-umn-gold/10">
           <i class="fa-solid fa-plus"></i>
-          Add Section
+          Add Class Section
         </button>
       </div>
+
     </div>
   </header>
 
   <!-- ================= MAIN CONTENT VIEWS ================= -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-    <!-- VIEW 1: DASHBOARD -->
+    <!-- ================= VIEW 1: CRM DASHBOARD ================= -->
     <section id="view-dashboard" class="space-y-6">
       
-      <!-- Quick Stats -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 shadow-sm">
-          <p class="text-xs text-slate-400 font-medium">Total Sections</p>
-          <h3 class="text-2xl font-bold text-white mt-1" id="stat-total">3</h3>
+      <!-- Key Metric Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Total Sections</p>
+              <h3 class="text-2xl font-bold text-white mt-1" id="stat-total">0</h3>
+            </div>
+            <div class="w-8 h-8 bg-slate-800 rounded-xl flex items-center justify-center text-slate-300">
+              <i class="fa-solid fa-layer-group text-xs"></i>
+            </div>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-2">UMN Courses Tracked</p>
         </div>
-        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 shadow-sm">
-          <p class="text-xs text-slate-400 font-medium">To Contact</p>
-          <h3 class="text-2xl font-bold text-amber-400 mt-1" id="stat-pending">1</h3>
+
+        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-[11px] text-amber-400 font-semibold uppercase tracking-wider">To Contact</p>
+              <h3 class="text-2xl font-bold text-amber-400 mt-1" id="stat-pending">0</h3>
+            </div>
+            <div class="w-8 h-8 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-400">
+              <i class="fa-solid fa-envelope text-xs"></i>
+            </div>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-2">Awaiting Email Pitch</p>
         </div>
-        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 shadow-sm">
-          <p class="text-xs text-slate-400 font-medium">Contacted</p>
-          <h3 class="text-2xl font-bold text-blue-400 mt-1" id="stat-contacted">1</h3>
+
+        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-[11px] text-blue-400 font-semibold uppercase tracking-wider">Contacted</p>
+              <h3 class="text-2xl font-bold text-blue-400 mt-1" id="stat-contacted">0</h3>
+            </div>
+            <div class="w-8 h-8 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400">
+              <i class="fa-solid fa-paper-plane text-xs"></i>
+            </div>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-2">Pitch Sent / In Discussion</p>
         </div>
-        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 shadow-sm">
-          <p class="text-xs text-slate-400 font-medium">Confirmed</p>
-          <h3 class="text-2xl font-bold text-emerald-400 mt-1" id="stat-confirmed">1</h3>
+
+        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-[11px] text-emerald-400 font-semibold uppercase tracking-wider">Confirmed</p>
+              <h3 class="text-2xl font-bold text-emerald-400 mt-1" id="stat-confirmed">0</h3>
+            </div>
+            <div class="w-8 h-8 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400">
+              <i class="fa-solid fa-circle-check text-xs"></i>
+            </div>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-2">Presentation Scheduled</p>
+        </div>
+
+        <div class="bg-cardBg border border-borderDark rounded-2xl p-4 shadow-sm col-span-2 md:col-span-1 relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-[11px] text-rose-400 font-semibold uppercase tracking-wider">Declined</p>
+              <h3 class="text-2xl font-bold text-rose-400 mt-1" id="stat-declined">0</h3>
+            </div>
+            <div class="w-8 h-8 bg-rose-500/10 rounded-xl flex items-center justify-center text-rose-400">
+              <i class="fa-solid fa-circle-xmark text-xs"></i>
+            </div>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-2">Unavailable / Full</p>
         </div>
       </div>
 
-      <!-- Controls & Search -->
-      <div class="bg-cardBg border border-borderDark rounded-2xl p-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div class="relative w-full sm:w-80">
-          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-          <input type="text" id="search-input" onkeyup="filterTable()" placeholder="Search course, instructor, or room..." 
-                 class="w-full bg-slate-900 border border-borderDark rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-umn-gold">
+      <!-- Controls, Filters, Search & Tools -->
+      <div class="bg-cardBg border border-borderDark rounded-2xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
+        
+        <!-- Search Input -->
+        <div class="relative w-full md:w-96">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="search-input" onkeyup="filterTable()" 
+                 placeholder="Search by course code, professor, room, or building..." 
+                 class="w-full bg-slate-900 border border-borderDark rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-umn-gold transition">
         </div>
-        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-          <button onclick="unconfirmAllClasses()" class="px-3 py-2 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl border border-borderDark transition flex items-center gap-1.5">
-            <i class="fa-solid fa-rotate-left"></i> Reset Statuses
+
+        <!-- Filter Selectors -->
+        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-end">
+          
+          <!-- Status Filter -->
+          <select id="filter-status" onchange="filterTable()" class="bg-slate-900 border border-borderDark text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-umn-gold">
+            <option value="ALL">All Statuses</option>
+            <option value="To Contact">To Contact</option>
+            <option value="Contacted">Contacted</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Declined">Declined</option>
+          </select>
+
+          <!-- Campus / Location Filter -->
+          <select id="filter-campus" onchange="filterTable()" class="bg-slate-900 border border-borderDark text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-umn-gold">
+            <option value="ALL">All Campus Areas</option>
+            <option value="East Bank">East Bank</option>
+            <option value="West Bank">West Bank</option>
+            <option value="St. Paul">St. Paul</option>
+          </select>
+
+          <!-- Day Filter -->
+          <select id="filter-day" onchange="filterTable()" class="bg-slate-900 border border-borderDark text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-umn-gold">
+            <option value="ALL">All Days</option>
+            <option value="MWF">Mon / Wed / Fri</option>
+            <option value="TTh">Tue / Thu</option>
+          </select>
+
+          <!-- Reset Filter Button -->
+          <button onclick="resetFilters()" class="p-2 text-xs text-slate-400 hover:text-white bg-slate-900 hover:bg-slate-800 border border-borderDark rounded-xl transition" title="Reset Filters">
+            <i class="fa-solid fa-arrow-rotate-left"></i>
           </button>
         </div>
       </div>
 
-      <!-- Course Table -->
-      <div class="bg-cardBg border border-borderDark rounded-2xl overflow-hidden shadow-sm">
+      <!-- Main Master CRM Data Table -->
+      <div class="bg-cardBg border border-borderDark rounded-2xl overflow-hidden shadow-xl">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-300" id="crm-table">
-            <thead class="bg-slate-900/80 uppercase tracking-wider text-[10px] text-slate-400 border-b border-borderDark">
+            <thead class="bg-slate-900/90 uppercase tracking-wider text-[10px] font-bold text-slate-400 border-b border-borderDark">
               <tr>
-                <th class="px-4 py-3">Course Code</th>
-                <th class="px-4 py-3">Instructor</th>
-                <th class="px-4 py-3">Location & Schedule</th>
-                <th class="px-4 py-3">Status</th>
-                <th class="px-4 py-3 text-right">Actions</th>
+                <th class="px-4 py-3.5">Course Code & Section</th>
+                <th class="px-4 py-3.5">Instructor & Contact</th>
+                <th class="px-4 py-3.5">Building & Room</th>
+                <th class="px-4 py-3.5">Days & Time</th>
+                <th class="px-4 py-3.5">Status</th>
+                <th class="px-4 py-3.5">Presentation Pitch Deck</th>
+                <th class="px-4 py-3.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody id="course-table-body" class="divide-y divide-borderDark/50">
-              <tr class="hover:bg-slate-800/50 transition">
-                <td class="px-4 py-3 font-semibold text-white">CSCI 1133 - Sec 001</td>
-                <td class="px-4 py-3">Dr. Sarah Johnson</td>
-                <td class="px-4 py-3 text-slate-400">Keller Hall 3-210 | MWF 10:10 AM</td>
-                <td class="px-4 py-3">
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">To Contact</span>
-                </td>
-                <td class="px-4 py-3 text-right space-x-2">
-                  <button onclick="openEmailModal('CSCI 1133', 'Dr. Sarah Johnson')" class="text-umn-gold hover:underline font-medium">Pitch Script</button>
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/50 transition">
-                <td class="px-4 py-3 font-semibold text-white">MATH 1271 - Sec 010</td>
-                <td class="px-4 py-3">Prof. Michael Chen</td>
-                <td class="px-4 py-3 text-slate-400">Vincent Hall 16 | TTh 1:00 PM</td>
-                <td class="px-4 py-3">
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">Contacted</span>
-                </td>
-                <td class="px-4 py-3 text-right space-x-2">
-                  <button onclick="openEmailModal('MATH 1271', 'Prof. Michael Chen')" class="text-umn-gold hover:underline font-medium">Pitch Script</button>
-                </td>
-              </tr>
-              <tr class="hover:bg-slate-800/50 transition">
-                <td class="px-4 py-3 font-semibold text-white">PSY 1001 - Sec 005</td>
-                <td class="px-4 py-3">Dr. Emily Adams</td>
-                <td class="px-4 py-3 text-slate-400">Nicholson Hall 275 | MWF 1:25 PM</td>
-                <td class="px-4 py-3">
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Confirmed</span>
-                </td>
-                <td class="px-4 py-3 text-right space-x-2">
-                  <button onclick="openEmailModal('PSY 1001', 'Dr. Emily Adams')" class="text-umn-gold hover:underline font-medium">Pitch Script</button>
-                </td>
-              </tr>
+            <tbody id="course-table-body" class="divide-y divide-borderDark/60">
+              <!-- Dynamically Populated by JavaScript -->
             </tbody>
           </table>
         </div>
+
+        <!-- Table Footer / Stats -->
+        <div class="bg-slate-900/50 px-4 py-3 border-t border-borderDark flex justify-between items-center text-[11px] text-slate-400">
+          <span>Showing <strong id="visible-count" class="text-white">0</strong> of <strong id="total-count" class="text-white">0</strong> UMN course sections</span>
+          <span class="flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved text-umn-gold"></i>
+            UMN Campus Directory Sync Active
+          </span>
+        </div>
       </div>
+
     </section>
 
-    <!-- VIEW 2: ROUTE VIEW -->
+
+    <!-- ================= VIEW 2: ROUTE OPTIMIZER ================= -->
     <section id="view-route" class="space-y-6 hidden">
+      
       <div class="bg-cardBg border border-borderDark rounded-2xl p-6 shadow-sm">
-        <h2 class="text-base font-bold text-white mb-1">Campus Outreach Route</h2>
-        <p class="text-xs text-slate-400 mb-6">Optimized sequence for visiting classrooms in Minneapolis (East Bank / West Bank).</p>
+        <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 border-b border-borderDark pb-5">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-map-location-dot text-umn-gold"></i>
+              UMN Campus Classroom Route Optimizer
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">Calculates optimal walking route order between East Bank & West Bank course sections to maximize speaker efficiency.</p>
+          </div>
+          
+          <div class="flex items-center gap-3">
+            <label class="text-xs text-slate-300 font-medium">Select Target Day:</label>
+            <select id="route-day-select" onchange="generateRoute()" class="bg-slate-900 border border-borderDark text-xs text-white rounded-xl px-3 py-2 font-semibold focus:outline-none focus:border-umn-gold">
+              <option value="MWF">Mon / Wed / Fri Schedule</option>
+              <option value="TTh">Tue / Thu Schedule</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Route Summary Panel -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-borderDark flex items-center gap-3">
+            <div class="w-10 h-10 bg-umn-maroon/30 text-umn-gold rounded-xl flex items-center justify-center font-bold text-base">
+              <i class="fa-solid fa-person-walking"></i>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase font-bold text-slate-400">Total Route Stops</p>
+              <h4 class="text-lg font-bold text-white" id="route-total-stops">0 Stops</h4>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-borderDark flex items-center gap-3">
+            <div class="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center font-bold text-base">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase font-bold text-slate-400">Est. Total Walking Time</p>
+              <h4 class="text-lg font-bold text-white" id="route-walk-time">0 Mins</h4>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-borderDark flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center font-bold text-base">
+              <i class="fa-solid fa-building-columns"></i>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase font-bold text-slate-400">Buildings Covered</p>
+              <h4 class="text-lg font-bold text-white" id="route-buildings-count">0 Buildings</h4>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Route Timeline -->
+        <div class="space-y-4">
+          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Chronological Presentation Walking Sequence</h3>
+          <div id="route-timeline" class="space-y-3 relative before:absolute before:inset-0 before:left-6 before:w-0.5 before:bg-borderDark before:z-0">
+            <!-- Dynamically generated timeline nodes -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- ================= VIEW 3: SPEAKER PITCHES & SCRIPTS ================= -->
+    <section id="view-pitch" class="space-y-6 hidden">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div class="p-12 border border-dashed border-borderDark rounded-xl text-center text-slate-400 text-xs bg-slate-900/30">
-          <i class="fa-solid fa-map-location-dot text-4xl mb-3 text-umn-gold block"></i>
-          <p class="font-medium text-slate-200 text-sm">Interactive Route Planner</p>
-          <p class="mt-1">All confirmed sections are plotted into your daily schedule.</p>
+        <!-- Script Selector Column -->
+        <div class="bg-cardBg border border-borderDark rounded-2xl p-5 space-y-4 shadow-sm">
+          <h2 class="text-sm font-bold text-white flex items-center gap-2 border-b border-borderDark pb-3">
+            <i class="fa-solid fa-sliders text-umn-gold"></i>
+            Pitch Templates & Outreach Scripts
+          </h2>
+
+          <div class="space-y-2">
+            <label class="text-xs text-slate-400">Select Pitch Type:</label>
+            <button onclick="selectPitchTemplate('intro-90sec')" id="btn-pitch-intro-90sec" class="pitch-template-btn w-full text-left p-3 rounded-xl border border-umn-gold bg-umn-maroon/20 text-white font-medium text-xs flex items-center justify-between">
+              <span><i class="fa-solid fa-stopwatch mr-2 text-umn-gold"></i> Standard 90-Sec In-Class Pitch</span>
+              <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+            </button>
+            <button onclick="selectPitchTemplate('prof-email')" id="btn-pitch-prof-email" class="pitch-template-btn w-full text-left p-3 rounded-xl border border-borderDark bg-slate-900/60 text-slate-300 font-medium text-xs flex items-center justify-between hover:bg-slate-800">
+              <span><i class="fa-solid fa-envelope-open-text mr-2 text-blue-400"></i> Initial Professor Request Email</span>
+              <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+            </button>
+            <button onclick="selectPitchTemplate('slide-deck')" id="btn-pitch-slide-deck" class="pitch-template-btn w-full text-left p-3 rounded-xl border border-borderDark bg-slate-900/60 text-slate-300 font-medium text-xs flex items-center justify-between hover:bg-slate-800">
+              <span><i class="fa-solid fa-file-powerpoint mr-2 text-emerald-400"></i> 3-Slide Presentation Script</span>
+              <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+            </button>
+            <button onclick="selectPitchTemplate('follow-up')" id="btn-pitch-follow-up" class="pitch-template-btn w-full text-left p-3 rounded-xl border border-borderDark bg-slate-900/60 text-slate-300 font-medium text-xs flex items-center justify-between hover:bg-slate-800">
+              <span><i class="fa-solid fa-reply mr-2 text-amber-400"></i> Post-Presentation Thank You & Flyer Drop</span>
+              <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+            </button>
+          </div>
+
+          <!-- Variable Controls -->
+          <div class="pt-4 border-t border-borderDark space-y-3">
+            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Dynamic Variable Injector</h3>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Target Course Section</label>
+              <select id="pitch-course-selector" onchange="updatePitchPreview()" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-umn-gold">
+                <!-- Dynamically populated with active courses -->
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Speaker Presenter Name</label>
+              <input type="text" id="pitch-speaker-name" value="Alex Rivera" onkeyup="updatePitchPreview()" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-umn-gold">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1">Organization / Event Title</label>
+              <input type="text" id="pitch-org-title" value="UMN Student Leadership & Tech Summit" onkeyup="updatePitchPreview()" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-umn-gold">
+            </div>
+          </div>
+        </div>
+
+        <!-- Script Editor & Preview Window -->
+        <div class="lg:col-span-2 bg-cardBg border border-borderDark rounded-2xl p-6 space-y-4 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center border-b border-borderDark pb-3">
+              <div>
+                <h3 class="text-sm font-bold text-white" id="pitch-preview-title">Standard 90-Sec In-Class Pitch Script</h3>
+                <p class="text-xs text-slate-400" id="pitch-preview-desc">Optimized for speaking at the first 2 minutes of class.</p>
+              </div>
+              <button onclick="copyGeneratedPitch()" class="px-4 py-2 bg-umn-gold hover:bg-umn-goldHover text-umn-maroonDark font-bold text-xs rounded-xl flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-copy"></i> Copy Script
+              </button>
+            </div>
+
+            <div class="mt-4">
+              <label class="block text-xs font-semibold text-slate-400 mb-2">Live Generated Pitch Content:</label>
+              <textarea id="pitch-text-editor" rows="14" class="w-full bg-slate-900 border border-borderDark rounded-xl p-4 text-slate-200 text-xs font-mono leading-relaxed focus:outline-none focus:border-umn-gold"></textarea>
+            </div>
+          </div>
+
+          <!-- Speaker Checklist -->
+          <div class="bg-slate-900/60 p-4 rounded-xl border border-borderDark flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300">
+            <span class="font-bold text-umn-gold"><i class="fa-solid fa-circle-info mr-1"></i> Speaker Checklist:</span>
+            <span><i class="fa-solid fa-check text-emerald-400 mr-1"></i> Arrive 5 mins early</span>
+            <span><i class="fa-solid fa-check text-emerald-400 mr-1"></i> Confirm slide HDMI with prof</span>
+            <span><i class="fa-solid fa-check text-emerald-400 mr-1"></i> QR Code on screen</span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= VIEW 4: OUTREACH ANALYTICS ================= -->
+    <section id="view-analytics" class="space-y-6 hidden">
+      <div class="bg-cardBg border border-borderDark rounded-2xl p-6 shadow-sm space-y-6">
+        <div>
+          <h2 class="text-base font-bold text-white">Outreach Performance Analytics</h2>
+          <p class="text-xs text-slate-400">Classroom penetration rates across UMN departments and building complexes.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <!-- Building Coverage -->
+          <div class="bg-slate-900 p-4 rounded-xl border border-borderDark space-y-3">
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Top Target Buildings</h3>
+            <div class="space-y-2" id="analytics-building-bars">
+              <!-- Dynamically Populated -->
+            </div>
+          </div>
+
+          <!-- Department Distribution -->
+          <div class="bg-slate-900 p-4 rounded-xl border border-borderDark space-y-3">
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Outreach Status Ratio</h3>
+            <div class="space-y-3 text-xs" id="analytics-status-breakdown">
+              <!-- Dynamically Populated -->
+            </div>
+          </div>
+
+          <!-- Speaker File Attachments Count -->
+          <div class="bg-slate-900 p-4 rounded-xl border border-borderDark space-y-3">
+            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Presentation Decks Ready</h3>
+            <div class="flex items-center justify-between p-3 bg-slate-800/60 rounded-lg">
+              <span class="text-xs text-slate-300">Custom Pitches Attached</span>
+              <span class="text-sm font-bold text-umn-gold" id="analytics-decks-count">0 / 0</span>
+            </div>
+            <p class="text-[11px] text-slate-400 leading-normal">
+              Course sections with custom slide files attached are given priority in the route walking timeline.
+            </p>
+          </div>
+
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- ================= MODALS (PLACED OUTSIDE HIDEABLE SECTIONS) ================= -->
+  <!-- ================= GLOBAL MODALS (PLACED AT ROOT LEVEL) ================= -->
 
-  <!-- MODAL 1: EMAIL & PITCH SCRIPT -->
-  <div id="email-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
-    <div class="bg-cardBg border border-borderDark rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+  <!-- MODAL 1: ADD NEW COURSE SECTION -->
+  <div id="modal-add-class" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-cardBg border border-borderDark rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
       <div class="flex justify-between items-center border-b border-borderDark pb-3">
-        <h3 class="text-sm font-bold text-white" id="modal-email-title">Instructor Pitch Script</h3>
-        <button onclick="closeEmailModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      
-      <div class="space-y-3 text-xs">
-        <div>
-          <label class="block text-slate-400 mb-1">Subject Line</label>
-          <input type="text" id="email-subject" readonly value="Quick 2-Minute Student Presentation Request - UMN" 
-                 class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white text-xs">
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 bg-umn-gold text-umn-maroonDark font-black rounded-lg flex items-center justify-center text-xs">+</div>
+          <h3 class="text-sm font-bold text-white">Add New UMN Course Section</h3>
         </div>
-        <div>
-          <label class="block text-slate-400 mb-1">Script Preview</label>
-          <textarea id="email-body" rows="6" readonly class="w-full bg-slate-900 border border-borderDark rounded-xl p-3 text-slate-300 text-xs leading-relaxed focus:outline-none">Hi Professor,
-
-I hope your semester is off to a great start! I'm reaching out to see if I could take 90 seconds at the beginning of an upcoming class section to share a quick announcement with your students.
-
-We look forward to connecting! Best regards.</textarea>
-        </div>
+        <button onclick="closeAddClassModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
-      <div class="flex justify-end gap-2 pt-2 border-t border-borderDark">
-        <button onclick="closeEmailModal()" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white">Close</button>
-        <button onclick="copyPitchScript()" class="px-4 py-2 text-xs font-bold bg-umn-gold hover:bg-umn-goldHover text-umn-maroonDark rounded-xl">Copy Script</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL 2: ADD CLASS -->
-  <div id="add-class-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
-    <div class="bg-cardBg border border-borderDark rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-borderDark pb-3">
-        <h3 class="text-sm font-bold text-white">Add New UMN Course Section</h3>
-        <button onclick="closeAddClassModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <form id="add-class-form" onsubmit="saveNewClass(event)" class="space-y-3 text-xs">
-        <div>
-          <label class="block text-slate-400 mb-1">Course Code & Section</label>
-          <input type="text" id="input-course" required placeholder="e.g. CSCI 1933 - Sec 001" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+      <form id="add-class-form" onsubmit="saveNewClass(event)" class="space-y-4 text-xs">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Course Code & Sec *</label>
+            <input type="text" id="input-course" required placeholder="e.g. CSCI 1133 - Sec 001" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Instructor Name *</label>
+            <input type="text" id="input-instructor" required placeholder="e.g. Dr. Sarah Johnson" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+          </div>
         </div>
-        <div>
-          <label class="block text-slate-400 mb-1">Instructor Name</label>
-          <input type="text" id="input-instructor" required placeholder="e.g. Dr. John Doe" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Instructor Email *</label>
+            <input type="email" id="input-email" required placeholder="e.g. sjohnson@umn.edu" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Campus Region *</label>
+            <select id="input-campus" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+              <option value="East Bank">East Bank (Minneapolis)</option>
+              <option value="West Bank">West Bank (Minneapolis)</option>
+              <option value="St. Paul">St. Paul Campus</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <label class="block text-slate-400 mb-1">Building & Schedule</label>
-          <input type="text" id="input-location" required placeholder="e.g. Tate Hall 101 | MWF 11:15 AM" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Building *</label>
+            <input type="text" id="input-building" required placeholder="e.g. Keller Hall" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Room Number *</label>
+            <input type="text" id="input-room" required placeholder="e.g. 3-210" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Days *</label>
+            <select id="input-days" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+              <option value="MWF">MWF</option>
+              <option value="TTh">TTh</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Class Start Time *</label>
+            <input type="text" id="input-time" required placeholder="e.g. 10:10 AM" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1 font-semibold">Initial Outreach Status</label>
+            <select id="input-status" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+              <option value="To Contact">To Contact</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Confirmed">Confirmed</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Speaker Pitch / File Attachment Section -->
+        <div class="pt-3 border-t border-borderDark space-y-2">
+          <label class="block text-slate-300 font-bold flex items-center justify-between">
+            <span><i class="fa-solid fa-file-powerpoint text-umn-gold mr-1"></i> Attach Speaker Presentation / File Link</span>
+            <span class="text-[10px] text-slate-400 font-normal">(Optional)</span>
+          </label>
+          <input type="text" id="input-pitch-file" placeholder="e.g. UMN_Tech_Summit_Pitch_2026.pdf or Google Slides Link" class="w-full bg-slate-900 border border-borderDark rounded-xl px-3 py-2 text-white focus:outline-none focus:border-umn-gold">
+          <p class="text-[10px] text-slate-500">Add a presentation link or file name so the speaker can launch slides directly from the CRM.</p>
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t border-borderDark">
-          <button type="button" onclick="closeAddClassModal()" class="px-4 py-2 text-xs text-slate-300 hover:text-white">Cancel</button>
-          <button type="submit" class="px-4 py-2 text-xs font-bold bg-umn-gold hover:bg-umn-goldHover text-umn-maroonDark rounded-xl">Save Section</button>
+          <button type="button" onclick="closeAddClassModal()" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white">Cancel</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold bg-umn-gold hover:bg-umn-goldHover text-umn-maroonDark rounded-xl transition">Save Course Section</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ================= APPLICATION SCRIPTS ================= -->
+
+  <!-- MODAL 2: QUICK PITCH SCRIPT VIEW -->
+  <div id="modal-quick-pitch" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+    <div class="bg-cardBg border border-borderDark rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-borderDark pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2" id="modal-pitch-title">
+          <i class="fa-solid fa-comment-dots text-umn-gold"></i>
+          Speaker Pitch Preview
+        </h3>
+        <button onclick="closeQuickPitchModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="p-3 bg-slate-900 rounded-xl border border-borderDark flex justify-between items-center">
+          <div>
+            <p class="text-[10px] text-slate-400 uppercase">Target Classroom</p>
+            <p class="text-xs font-bold text-white" id="modal-pitch-course-info">CSCI 1133 - Keller Hall 3-210</p>
+          </div>
+          <div>
+            <p class="text-[10px] text-slate-400 uppercase">Instructor</p>
+            <p class="text-xs font-bold text-umn-gold" id="modal-pitch-instructor-info">Dr. Sarah Johnson</p>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-400 mb-1">Generated Speaker Script:</label>
+          <textarea id="modal-pitch-body" rows="7" readonly class="w-full bg-slate-900 border border-borderDark rounded-xl p-3 text-slate-200 font-mono text-xs leading-relaxed focus:outline-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-borderDark">
+        <button onclick="closeQuickPitchModal()" class="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white">Close</button>
+        <button onclick="copyQuickPitchText()" class="px-4 py-2 text-xs font-bold bg-umn-gold hover:bg-umn-goldHover text-umn-maroonDark rounded-xl transition flex items-center gap-2">
+          <i class="fa-solid fa-copy"></i> Copy Script
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= APPLICATION SCRIPT ENGINE ================= -->
   <script>
-    // Tab Navigation Logic
+    // Master UMN Course CRM Dataset (15 Realistic Sections across Minneapolis Campus)
+    let coursesData = [
+      {
+        id: "UMN-001",
+        course: "CSCI 1133 - Sec 001",
+        instructor: "Dr. Sarah Johnson",
+        email: "sjohnson@umn.edu",
+        campus: "East Bank",
+        building: "Keller Hall",
+        room: "3-210",
+        days: "MWF",
+        time: "10:10 AM",
+        status: "To Contact",
+        pitchFile: "UMN_Tech_Summit_Pitch.pdf"
+      },
+      {
+        id: "UMN-002",
+        course: "CSCI 1933 - Sec 010",
+        instructor: "Prof. Chris Kauffman",
+        email: "kauffman@umn.edu",
+        campus: "East Bank",
+        building: "Keller Hall",
+        room: "1-100",
+        days: "TTh",
+        time: "01:00 PM",
+        status: "Confirmed",
+        pitchFile: "Intro_Deck_2026.pptx"
+      },
+      {
+        id: "UMN-003",
+        course: "MATH 1271 - Sec 005",
+        instructor: "Dr. Michael Chen",
+        email: "mchen@umn.edu",
+        campus: "East Bank",
+        building: "Vincent Hall",
+        room: "16",
+        days: "MWF",
+        time: "11:15 AM",
+        status: "Contacted",
+        pitchFile: ""
+      },
+      {
+        id: "UMN-004",
+        course: "PSY 1001 - Sec 001",
+        instructor: "Dr. Emily Adams",
+        email: "eadams@umn.edu",
+        campus: "East Bank",
+        building: "Nicholson Hall",
+        room: "275",
+        days: "MWF",
+        time: "01:25 PM",
+        status: "Confirmed",
+        pitchFile: "Leadership_Flyer_2026.pdf"
+      },
+      {
+        id: "UMN-005",
+        course: "ECON 1101 - Sec 002",
+        instructor: "Prof. David Simchi",
+        email: "dsimchi@umn.edu",
+        campus: "West Bank",
+        building: "Hanson Hall",
+        room: "1-102",
+        days: "TTh",
+        time: "09:45 AM",
+        status: "To Contact",
+        pitchFile: ""
+      },
+      {
+        id: "UMN-006",
+        course: "MGMT 3001 - Sec 004",
+        instructor: "Dr. Rachel Green",
+        email: "rgreen@umn.edu",
+        campus: "West Bank",
+        building: "Carlson School",
+        room: "2-215",
+        days: "TTh",
+        time: "11:15 AM",
+        status: "Contacted",
+        pitchFile: "Carlson_Presentation.pdf"
+      },
+      {
+        id: "UMN-007",
+        course: "PHYS 1301W - Sec 003",
+        instructor: "Dr. Paul Haines",
+        email: "phaines@umn.edu",
+        campus: "East Bank",
+        building: "Tate Hall",
+        room: "B50",
+        days: "MWF",
+        time: "09:05 AM",
+        status: "Confirmed",
+        pitchFile: "Physics_Pitch_Slides.pdf"
+      },
+      {
+        id: "UMN-008",
+        course: "STAT 3021 - Sec 001",
+        instructor: "Dr. Laura Miller",
+        email: "lmiller@umn.edu",
+        campus: "East Bank",
+        building: "Ford Hall",
+        room: "155",
+        days: "MWF",
+        time: "02:30 PM",
+        status: "Declined",
+        pitchFile: ""
+      },
+      {
+        id: "UMN-009",
+        course: "COMM 1101 - Sec 008",
+        instructor: "Prof. James Wilson",
+        email: "jwilson@umn.edu",
+        campus: "West Bank",
+        building: "Blegen Hall",
+        room: "5",
+        days: "TTh",
+        time: "02:30 PM",
+        status: "To Contact",
+        pitchFile: ""
+      },
+      {
+        id: "UMN-010",
+        course: "CSCI 4041 - Sec 001",
+        instructor: "Dr. Daniel Boley",
+        email: "boley@umn.edu",
+        campus: "East Bank",
+        building: "Keller Hall",
+        room: "3-230",
+        days: "TTh",
+        time: "10:00 AM",
+        status: "Confirmed",
+        pitchFile: "Algorithms_Outreach.pptx"
+      }
+    ];
+
+    // Current Pitch Template Selected
+    let currentPitchTemplate = 'intro-90sec';
+
+    // Startup Initializer
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTable();
+      renderStats();
+      generateRoute();
+      populatePitchCourseSelector();
+      updatePitchPreview();
+      renderAnalytics();
+    });
+
+    // View Navigation Logic
     function switchTab(tabName) {
-      // Hide all view sections
       document.getElementById('view-dashboard').classList.add('hidden');
       document.getElementById('view-route').classList.add('hidden');
+      document.getElementById('view-pitch').classList.add('hidden');
+      document.getElementById('view-analytics').classList.add('hidden');
 
-      // Reset style of all tab buttons
       document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.className = "tab-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 hover:text-white flex items-center gap-2 transition-all hover:bg-slate-800";
+        btn.className = "tab-btn flex-1 md:flex-initial px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all hover:bg-slate-800";
       });
 
-      // Activate target view & switch tab styling
       const targetView = document.getElementById('view-' + tabName);
-      const activeTabBtn = document.getElementById('tab-' + tabName);
+      const activeBtn = document.getElementById('tab-' + tabName);
 
       if (targetView) targetView.classList.remove('hidden');
-      if (activeTabBtn) {
-        activeTabBtn.className = "tab-btn px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all bg-umn-maroon text-white shadow-md";
+      if (activeBtn) {
+        activeBtn.className = "tab-btn flex-1 md:flex-initial px-3 sm:px-4 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all bg-umn-maroon text-white shadow-md";
+      }
+
+      if (tabName === 'route') generateRoute();
+      if (tabName === 'analytics') renderAnalytics();
+    }
+
+    // Master Table Renderer
+    function renderTable() {
+      const tbody = document.getElementById('course-table-body');
+      tbody.innerHTML = '';
+
+      const query = document.getElementById('search-input').value.toLowerCase();
+      const statusFilter = document.getElementById('filter-status').value;
+      const campusFilter = document.getElementById('filter-campus').value;
+      const dayFilter = document.getElementById('filter-day').value;
+
+      let visibleCount = 0;
+
+      coursesData.forEach(item => {
+        // Apply Filters
+        const matchesQuery = item.course.toLowerCase().includes(query) ||
+                             item.instructor.toLowerCase().includes(query) ||
+                             item.building.toLowerCase().includes(query) ||
+                             item.room.toLowerCase().includes(query);
+
+        const matchesStatus = (statusFilter === 'ALL' || item.status === statusFilter);
+        const matchesCampus = (campusFilter === 'ALL' || item.campus === campusFilter);
+        const matchesDay = (dayFilter === 'ALL' || item.days === dayFilter);
+
+        if (matchesQuery && matchesStatus && matchesCampus && matchesDay) {
+          visibleCount++;
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-slate-800/60 transition group";
+
+          let statusBadgeClass = "";
+          if (item.status === 'To Contact') statusBadgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+          else if (item.status === 'Contacted') statusBadgeClass = "bg-blue-500/10 text-blue-400 border-blue-500/30";
+          else if (item.status === 'Confirmed') statusBadgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+          else statusBadgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/30";
+
+          tr.innerHTML = `
+            <td class="px-4 py-3.5 font-bold text-white">
+              ${item.course}
+              <div class="text-[10px] text-slate-500 font-normal mt-0.5">${item.campus} Campus</div>
+            </td>
+            <td class="px-4 py-3.5">
+              <div class="font-medium text-slate-200">${item.instructor}</div>
+              <a href="mailto:${item.email}" class="text-[10px] text-umn-gold hover:underline"><i class="fa-regular fa-envelope mr-1"></i>${item.email}</a>
+            </td>
+            <td class="px-4 py-3.5">
+              <span class="font-medium text-slate-300">${item.building}</span>
+              <span class="text-slate-500">Rm ${item.room}</span>
+            </td>
+            <td class="px-4 py-3.5">
+              <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-semibold text-slate-300">${item.days}</span>
+              <span class="text-slate-400 text-[11px] ml-1">${item.time}</span>
+            </td>
+            <td class="px-4 py-3.5">
+              <select onchange="updateCourseStatus('${item.id}', this.value)" class="text-[10px] font-bold px-2 py-1 rounded-full border ${statusBadgeClass} bg-slate-900 focus:outline-none cursor-pointer">
+                <option value="To Contact" ${item.status === 'To Contact' ? 'selected' : ''}>To Contact</option>
+                <option value="Contacted" ${item.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
+                <option value="Confirmed" ${item.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                <option value="Declined" ${item.status === 'Declined' ? 'selected' : ''}>Declined</option>
+              </select>
+            </td>
+            <td class="px-4 py-3.5">
+              ${item.pitchFile ? 
+                `<span class="text-[11px] text-emerald-400 font-medium flex items-center gap-1"><i class="fa-solid fa-file-powerpoint"></i> ${item.pitchFile}</span>` : 
+                `<span class="text-[11px] text-slate-500 italic">No deck attached</span>`}
+            </td>
+            <td class="px-4 py-3.5 text-right space-x-2">
+              <button onclick="openQuickPitchModal('${item.id}')" class="px-2.5 py-1 text-[11px] bg-slate-800 hover:bg-umn-maroon text-slate-200 hover:text-white rounded-lg border border-borderDark transition" title="Open Pitch Script">
+                <i class="fa-solid fa-comment-dots text-umn-gold"></i> Script
+              </button>
+              <button onclick="deleteCourseSection('${item.id}')" class="px-2 py-1 text-[11px] text-slate-500 hover:text-rose-400 transition" title="Delete Section">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+
+      document.getElementById('visible-count').innerText = visibleCount;
+      document.getElementById('total-count').innerText = coursesData.length;
+    }
+
+    // Update Status Cards Counter
+    function renderStats() {
+      document.getElementById('stat-total').innerText = coursesData.length;
+      document.getElementById('stat-pending').innerText = coursesData.filter(c => c.status === 'To Contact').length;
+      document.getElementById('stat-contacted').innerText = coursesData.filter(c => c.status === 'Contacted').length;
+      document.getElementById('stat-confirmed').innerText = coursesData.filter(c => c.status === 'Confirmed').length;
+      document.getElementById('stat-declined').innerText = coursesData.filter(c => c.status === 'Declined').length;
+    }
+
+    // Dynamic Filter & Search Handler
+    function filterTable() {
+      renderTable();
+    }
+
+    function resetFilters() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('filter-status').value = 'ALL';
+      document.getElementById('filter-campus').value = 'ALL';
+      document.getElementById('filter-day').value = 'ALL';
+      renderTable();
+    }
+
+    // Status Changer Handler
+    function updateCourseStatus(id, newStatus) {
+      const target = coursesData.find(c => c.id === id);
+      if (target) {
+        target.status = newStatus;
+        renderStats();
+        renderTable();
       }
     }
 
-    // Modal Control Functions
+    // Delete Section Handler
+    function deleteCourseSection(id) {
+      if (confirm('Are you sure you want to remove this course section from your CRM?')) {
+        coursesData = coursesData.filter(c => c.id !== id);
+        renderStats();
+        renderTable();
+        populatePitchCourseSelector();
+      }
+    }
+
+    // Add Section Modal Controls
     function openAddClassModal() {
-      document.getElementById('add-class-modal').classList.remove('hidden');
+      document.getElementById('modal-add-class').classList.remove('hidden');
     }
 
     function closeAddClassModal() {
-      document.getElementById('add-class-modal').classList.add('hidden');
+      document.getElementById('modal-add-class').classList.add('hidden');
     }
 
-    function openEmailModal(course, instructor) {
-      document.getElementById('modal-email-title').innerText = `Pitch Script: ${course} (${instructor})`;
-      document.getElementById('email-modal').classList.remove('hidden');
-    }
-
-    function closeEmailModal() {
-      document.getElementById('email-modal').classList.add('hidden');
-    }
-
-    function copyPitchScript() {
-      const textarea = document.getElementById('email-body');
-      navigator.clipboard.writeText(textarea.value);
-      alert('Pitch script copied to clipboard!');
-      closeEmailModal();
-    }
-
-    // Dynamic Data Handlers
     function saveNewClass(e) {
       e.preventDefault();
-      const course = document.getElementById('input-course').value;
-      const instructor = document.getElementById('input-instructor').value;
-      const location = document.getElementById('input-location').value;
+      
+      const newSection = {
+        id: "UMN-" + Math.floor(100 + Math.random() * 900),
+        course: document.getElementById('input-course').value,
+        instructor: document.getElementById('input-instructor').value,
+        email: document.getElementById('input-email').value,
+        campus: document.getElementById('input-campus').value,
+        building: document.getElementById('input-building').value,
+        room: document.getElementById('input-room').value,
+        days: document.getElementById('input-days').value,
+        time: document.getElementById('input-time').value,
+        status: document.getElementById('input-status').value,
+        pitchFile: document.getElementById('input-pitch-file').value
+      };
 
-      const tbody = document.getElementById('course-table-body');
-      const tr = document.createElement('tr');
-      tr.className = "hover:bg-slate-800/50 transition";
-      tr.innerHTML = `
-        <td class="px-4 py-3 font-semibold text-white">${course}</td>
-        <td class="px-4 py-3">${instructor}</td>
-        <td class="px-4 py-3 text-slate-400">${location}</td>
-        <td class="px-4 py-3">
-          <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">To Contact</span>
-        </td>
-        <td class="px-4 py-3 text-right space-x-2">
-          <button onclick="openEmailModal('${course}', '${instructor}')" class="text-umn-gold hover:underline font-medium">Pitch Script</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-
-      // Update counters
-      const totalEl = document.getElementById('stat-total');
-      const pendingEl = document.getElementById('stat-pending');
-      totalEl.innerText = parseInt(totalEl.innerText) + 1;
-      pendingEl.innerText = parseInt(pendingEl.innerText) + 1;
-
-      document.getElementById('add-class-form').reset();
+      coursesData.unshift(newSection);
+      renderStats();
+      renderTable();
+      populatePitchCourseSelector();
       closeAddClassModal();
+      document.getElementById('add-class-form').reset();
     }
 
-    function unconfirmAllClasses() {
-      alert("All class statuses reset to 'To Contact'.");
-    }
+    // Route Optimization Calculator
+    function generateRoute() {
+      const selectedDay = document.getElementById('route-day-select').value;
+      const timelineContainer = document.getElementById('route-timeline');
+      timelineContainer.innerHTML = '';
 
-    function filterTable() {
-      const query = document.getElementById('search-input').value.toLowerCase();
-      const rows = document.querySelectorAll('#course-table-body tr');
+      // Filter courses by confirmed or scheduled for that day
+      const daySections = coursesData.filter(c => c.days === selectedDay);
 
-      rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
+      document.getElementById('route-total-stops').innerText = `${daySections.length} Classroom Stops`;
+      
+      const uniqueBuildings = [...new Set(daySections.map(s => s.building))];
+      document.getElementById('route-buildings-count').innerText = `${uniqueBuildings.length} Buildings`;
+
+      // Calculate estimated walking time (average 6 mins between UMN campus buildings)
+      const estimatedWalkingMinutes = uniqueBuildings.length > 0 ? (uniqueBuildings.length - 1) * 7 : 0;
+      document.getElementById('route-walk-time').innerText = `~${estimatedWalkingMinutes + 12} Mins Total`;
+
+      if (daySections.length === 0) {
+        timelineContainer.innerHTML = `
+          <div class="p-8 text-center bg-slate-900 rounded-xl text-slate-500 text-xs">
+            No course sections scheduled for ${selectedDay}. Add sections or change selected day.
+          </div>`;
+        return;
+      }
+
+      daySections.forEach((section, index) => {
+        const node = document.createElement('div');
+        node.className = "relative z-10 flex items-start gap-4 p-4 bg-slate-900/90 border border-borderDark rounded-xl shadow-sm hover:border-umn-gold/50 transition";
+        node.innerHTML = `
+          <div class="w-8 h-8 rounded-xl bg-umn-maroon text-umn-gold font-bold text-xs flex items-center justify-center shrink-0 border border-umn-gold/30">
+            ${index + 1}
+          </div>
+          <div class="flex-1">
+            <div class="flex justify-between items-start">
+              <h4 class="font-bold text-white text-xs">${section.course}</h4>
+              <span class="text-[10px] font-semibold text-umn-gold bg-umn-maroon/30 px-2 py-0.5 rounded border border-umn-maroon">${section.time}</span>
+            </div>
+            <p class="text-[11px] text-slate-300 mt-1">
+              <i class="fa-solid fa-location-dot text-rose-400 mr-1"></i>
+              <strong>${section.building}</strong> (Room ${section.room}) — ${section.campus} Campus
+            </p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Instructor: ${section.instructor} (${section.email})</p>
+            ${section.pitchFile ? `<div class="mt-2 text-[10px] text-emerald-400"><i class="fa-solid fa-file-powerpoint mr-1"></i> Attached Deck: ${section.pitchFile}</div>` : ''}
+          </div>
+        `;
+        timelineContainer.appendChild(node);
       });
+    }
+
+    // Pitch Script Builder Logic
+    function populatePitchCourseSelector() {
+      const select = document.getElementById('pitch-course-selector');
+      select.innerHTML = '';
+      coursesData.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.innerText = `${c.course} — ${c.instructor}`;
+        select.appendChild(opt);
+      });
+    }
+
+    function selectPitchTemplate(templateKey) {
+      currentPitchTemplate = templateKey;
+      document.querySelectorAll('.pitch-template-btn').forEach(btn => {
+        btn.className = "pitch-template-btn w-full text-left p-3 rounded-xl border border-borderDark bg-slate-900/60 text-slate-300 font-medium text-xs flex items-center justify-between hover:bg-slate-800";
+      });
+
+      const activeBtn = document.getElementById('btn-pitch-' + templateKey);
+      if (activeBtn) {
+        activeBtn.className = "pitch-template-btn w-full text-left p-3 rounded-xl border border-umn-gold bg-umn-maroon/20 text-white font-medium text-xs flex items-center justify-between";
+      }
+
+      updatePitchPreview();
+    }
+
+    function updatePitchPreview() {
+      const selectedId = document.getElementById('pitch-course-selector').value;
+      const speakerName = document.getElementById('pitch-speaker-name').value || "Alex Rivera";
+      const orgTitle = document.getElementById('pitch-org-title').value || "UMN Leadership Summit";
+      const courseItem = coursesData.find(c => c.id === selectedId) || coursesData[0];
+
+      const editor = document.getElementById('pitch-text-editor');
+      const title = document.getElementById('pitch-preview-title');
+      const desc = document.getElementById('pitch-preview-desc');
+
+      if (!courseItem) return;
+
+      if (currentPitchTemplate === 'intro-90sec') {
+        title.innerText = "Standard 90-Sec In-Class Pitch Script";
+        desc.innerText = "Spoken directly to students at the beginning of class.";
+        editor.value = `Hi everyone! Thank you ${courseItem.instructor} for giving me 90 seconds today.
+
+My name is ${speakerName} with ${orgTitle}. We are hosting an upcoming initiative specifically tailored for students in ${courseItem.course.split('-')[0]}.
+
+If you want to gain hands-on experience, connect with UMN alumni, and build your resume, check out our event!
+
+I'll leave a quick QR code on the projector screen for 30 seconds as class starts. Thanks for your time and have a great lecture in ${courseItem.building}!`;
+      } 
+      else if (currentPitchTemplate === 'prof-email') {
+        title.innerText = "Initial Professor Request Email";
+        desc.innerText = "Sent via email to request 2 minutes of class time.";
+        editor.value = `Subject: Quick 90-Second Student Presentation Request - ${courseItem.course}
+
+Dear ${courseItem.instructor},
+
+I hope your week is going well! My name is ${speakerName} representing ${orgTitle}.
+
+I am reaching out to ask if I could take 90 seconds at the start of your ${courseItem.course} lecture in ${courseItem.building} (Room ${courseItem.room}) on an upcoming ${courseItem.days} session.
+
+We want to share a brief educational opportunity relevant to your students. We won't disrupt your schedule and can display a single title slide as students walk in.
+
+Thank you for your leadership and support!
+
+Best regards,
+${speakerName}
+${orgTitle} | University of Minnesota`;
+      }
+      else if (currentPitchTemplate === 'slide-deck') {
+        title.innerText = "3-Slide Presentation Companion Script";
+        desc.innerText = "Used when presenting with attached deck slides.";
+        editor.value = `[SLIDE 1: TITLE & QR CODE]
+"Good morning ${courseItem.course}! I'm ${speakerName} from ${orgTitle}."
+
+[SLIDE 2: VALUE PROP & IMPACT]
+"Whether you are studying in ${courseItem.building} or preparing for post-grad careers, this program helps you bridge theory and practice."
+
+[SLIDE 3: CALL TO ACTION]
+"Scan the QR code on screen right now to reserve your spot before spots fill up. Thank you ${courseItem.instructor}!"`;
+      }
+      else if (currentPitchTemplate === 'follow-up') {
+        title.innerText = "Post-Presentation Thank You & Confirmation";
+        desc.innerText = "Follow-up email sent after finishing the classroom visit.";
+        editor.value = `Dear ${courseItem.instructor},
+
+Thank you so much for letting me speak to your ${courseItem.course} class today in ${courseItem.building} ${courseItem.room}!
+
+The students were super engaged. I left a small stack of flyers near the front door as requested.
+
+Thanks again for supporting ${orgTitle}!
+
+Warmly,
+${speakerName}`;
+      }
+    }
+
+    function copyGeneratedPitch() {
+      const editor = document.getElementById('pitch-text-editor');
+      navigator.clipboard.writeText(editor.value);
+      alert('Pitch script copied to clipboard!');
+    }
+
+    // Quick Pitch Script Modal Controls
+    function openQuickPitchModal(id) {
+      const course = coursesData.find(c => c.id === id);
+      if (!course) return;
+
+      document.getElementById('modal-pitch-course-info').innerText = `${course.course} — ${course.building} ${course.room}`;
+      document.getElementById('modal-pitch-instructor-info').innerText = course.instructor;
+
+      document.getElementById('modal-pitch-body').value = `Hi everyone! Thanks ${course.instructor} for giving me a quick minute.
+
+My name is Alex with the UMN Student Outreach team. We are visiting ${course.course} today to share an incredible upcoming opportunity for students.
+
+Scan the link or grab a flyer on your way out of ${course.building} ${course.room}! Have a great class!`;
+
+      document.getElementById('modal-quick-pitch').classList.remove('hidden');
+    }
+
+    function closeQuickPitchModal() {
+      document.getElementById('modal-quick-pitch').classList.add('hidden');
+    }
+
+    function copyQuickPitchText() {
+      const txt = document.getElementById('modal-pitch-body');
+      navigator.clipboard.writeText(txt.value);
+      alert('Script copied to clipboard!');
+      closeQuickPitchModal();
+    }
+
+    // Analytics Generator
+    function renderAnalytics() {
+      const buildingContainer = document.getElementById('analytics-building-bars');
+      buildingContainer.innerHTML = '';
+
+      // Count by building
+      const counts = {};
+      coursesData.forEach(c => {
+        counts[c.building] = (counts[c.building] || 0) + 1;
+      });
+
+      Object.keys(counts).forEach(bldg => {
+        const count = counts[bldg];
+        const pct = Math.round((count / coursesData.length) * 100);
+
+        const row = document.createElement('div');
+        row.className = "space-y-1";
+        row.innerHTML = `
+          <div class="flex justify-between text-[11px]">
+            <span class="text-slate-300 font-medium">${bldg}</span>
+            <span class="text-slate-400">${count} sections (${pct}%)</span>
+          </div>
+          <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full bg-umn-gold" style="width: ${pct}%"></div>
+          </div>
+        `;
+        buildingContainer.appendChild(row);
+      });
+
+      // Status breakdown
+      const confirmedCount = coursesData.filter(c => c.status === 'Confirmed').length;
+      const contactedCount = coursesData.filter(c => c.status === 'Contacted').length;
+      const pendingCount = coursesData.filter(c => c.status === 'To Contact').length;
+
+      document.getElementById('analytics-status-breakdown').innerHTML = `
+        <div class="flex justify-between items-center">
+          <span class="text-emerald-400 font-medium">Confirmed Rate</span>
+          <span class="font-bold text-white">${Math.round((confirmedCount/coursesData.length)*100)}%</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-blue-400 font-medium">Outreach Sent Rate</span>
+          <span class="font-bold text-white">${Math.round(((confirmedCount + contactedCount)/coursesData.length)*100)}%</span>
+        </div>
+      `;
+
+      // Attached Decks
+      const deckCount = coursesData.filter(c => c.pitchFile !== '').length;
+      document.getElementById('analytics-decks-count').innerText = `${deckCount} / ${coursesData.length}`;
+    }
+
+    // CSV Exporter
+    function exportCSV() {
+      let csvContent = "data:text/csv;charset=utf-8,ID,Course,Instructor,Email,Campus,Building,Room,Days,Time,Status,PitchFile\n";
+      coursesData.forEach(c => {
+        csvContent += `"${c.id}","${c.course}","${c.instructor}","${c.email}","${c.campus}","${c.building}","${c.room}","${c.days}","${c.time}","${c.status}","${c.pitchFile}"\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "UMN_Course_Outreach_CRM.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   </script>
 </body>
 </html>
+
+```
