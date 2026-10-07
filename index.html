@@ -405,74 +405,54 @@
       </div>
     </section>
 
-    <!-- VIEW 3: PRESENTATION MODE & SLIDE VIEWER -->
-   <!-- VIEW 3: PRESENTATION DECK & SPEECH CARDS -->
-  <section id="view-presentation" class="space-y-6">
-    <!-- Pitch Deck Header (Timer Removed) -->
-    <div class="bg-cardBg border border-borderDark p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6">
-      <div>
-        <div class="flex items-center gap-2">
-          <h2 class="text-xl font-bold text-white font-heading">Ezra's Pitch Command Center</h2>
-          <span class="bg-umn-gold/20 text-umn-gold text-xs font-bold px-2.5 py-0.5 rounded-full border border-umn-gold/40">Presentation Mode</span>
-        </div>
-        <p class="text-xs text-slate-400 mt-1">Embedded interactive pitch deck paired with classroom speech cue cards.</p>
-      </div>
-    </div>
+   <div style="background:#0b0f19; padding:20px; border-radius:12px; color:#fff;">
+  <div style="display:flex; justify-between; align-items:center; margin-bottom:15px;">
+    <h3>Ezra's Pitch Command Center</h3>
+    <button id="toggleBtn" onclick="toggleConfig()" style="background:#1f2937; color:#fff; padding:6px 12px; border-radius:6px; border:none; cursor:pointer;">✏️ Change Presentation</button>
+  </div>
 
-    <!-- Interactive Slide Deck Viewer Container (Embedded HTML Presentation) -->
-    <div class="bg-cardBg border border-borderDark rounded-2xl p-4 overflow-hidden flex flex-col gap-4">
-      <div class="flex justify-between items-center px-2">
-        <div class="flex items-center gap-2 text-xs text-slate-300">
-          <i class="fa-solid fa-file-powerpoint text-umn-gold"></i>
-          <span>AIB CRM Pitch Presentation Deck</span>
-        </div>
+  <!-- Config Panel -->
+  <div id="configPanel" style="display:none; background:#111827; padding:15px; border-radius:8px; margin-bottom:15px;">
+    <label style="font-size:12px; color:#9ca3af; display:block; margin-bottom:8px;">Paste URL, Embed Code, or HTML:</label>
+    <textarea id="deckInput" style="width:100%; height:80px; background:#030712; color:#fff; border:1px solid #374151; border-radius:6px; padding:10px;"></textarea>
+    <button onclick="saveDeck()" style="margin-top:10px; background:#eab308; color:#000; font-weight:bold; padding:8px 16px; border-radius:6px; border:none; cursor:pointer;">Save & Load</button>
+  </div>
 
-        <div class="flex items-center gap-2">
-          <button onclick="toggleFullscreenEmbed()" class="px-3 py-1.5 rounded-lg bg-umn-maroon hover:bg-umn-maroonDark text-xs text-white flex items-center gap-1.5 transition-all">
-            <i class="fa-solid fa-expand"></i>
-            <span>Fullscreen</span>
-          </button>
-        </div>
-      </div>
+  <!-- Viewer -->
+  <iframe id="deckViewer" style="width:100%; height:650px; border:1px solid #1f2937; border-radius:8px; background:#000;" allow="fullscreen"></iframe>
+</div>
 
-      <!-- Embedded iFrame Viewer using srcdoc -->
-      <div id="presentation-frame-container" class="relative w-full h-[600px] bg-darkBg rounded-xl overflow-hidden border border-borderDark flex items-center justify-center">
-        <iframe id="presentation-iframe" 
-                srcdoc='<!doctype html><html><head><meta charset="utf8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0;padding:20px;font-family:sans-serif;background:#0f172a;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;}h1{color:#ffcc00;}</style></head><body><h1>UMN AI in Business Pitch Deck</h1><p>Presentation deck embedded directly into AIB CRM.</p></body></html>' 
-                class="w-full h-full border-0" 
-                allow="fullscreen"
-                title="UMN AI in Business Presentation">
-        </iframe>
-      </div>
-    </div>
+<script>
+  function toggleConfig() {
+    const panel = document.getElementById('configPanel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  }
 
-    <!-- Speech Cue Cards for Ezra -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="bg-cardBg border border-borderDark p-5 rounded-2xl">
-        <div class="text-xs font-bold text-umn-gold uppercase tracking-wider mb-2">00:00 - 00:15 | The Hook</div>
-        <h4 class="text-sm font-bold text-white">Introduction & Relevance</h4>
-        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-          "Hey everyone! I'm Ezra, founder of the AI in Business Club here at Carlson. Whatever major you're pursuing—Finance, Marketing, Econ, or Computer Science—AI is actively reshaping your industry right now."
-        </p>
-      </div>
+  function loadDeck() {
+    const saved = localStorage.getItem('aib_pitch_deck') || '';
+    document.getElementById('deckInput').value = saved;
+    const viewer = document.getElementById('deckViewer');
+    
+    if (!saved) return;
 
-      <div class="bg-cardBg border border-borderDark p-5 rounded-2xl">
-        <div class="text-xs font-bold text-umn-gold uppercase tracking-wider mb-2">00:15 - 00:40 | Value Proposition</div>
-        <h4 class="text-sm font-bold text-white">Hands-On Workshops & Network</h4>
-        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-          "We don't just talk about high-level theory. We build real AI agents, teach prompt engineering, host corporate case competitions, and connect you with recruiters looking for tech-forward students."
-        </p>
-      </div>
+    if (saved.includes('docs.google.com/presentation')) {
+      viewer.src = saved.replace(/\/edit.*$/, '/embed?start=false&loop=false&delayms=3000');
+    } else if (saved.trim().startsWith('<iframe') || saved.trim().startsWith('<html') || saved.trim().startsWith('<!DOCTYPE')) {
+      viewer.srcdoc = saved;
+    } else {
+      viewer.src = saved;
+    }
+  }
 
-      <div class="bg-cardBg border border-borderDark p-5 rounded-2xl">
-        <div class="text-xs font-bold text-umn-gold uppercase tracking-wider mb-2">00:40 - 01:00 | Call To Action</div>
-        <h4 class="text-sm font-bold text-white">First Meeting & Joining</h4>
-        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-          "No prior coding experience is required! Scan the QR code on the board or visit our kick-off meeting this Thursday at 6 PM in CSOM. Let's build your AI advantage together!"
-        </p>
-      </div>
-    </div>
-  </section>
+  function saveDeck() {
+    const val = document.getElementById('deckInput').value;
+    localStorage.setItem('aib_pitch_deck', val);
+    loadDeck();
+    toggleConfig();
+  }
+
+  loadDeck();
+</script>
        
   <!-- MODAL: EMAIL & PITCH SCRIPT GENERATOR FOR EZRA -->
   <div id="email-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
